@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách bài viết</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <!--        <h2>Editable Tables</h2>-->
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><span>Danh sách bài viết</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <section class="card">
+        <header class="card-header">
+            <div class="card-actions">
+                <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+            </div>
+            <h2 class="card-title">Danh sách bài viết</h2>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <a href="/admin/posts/create" id="addToTable" class="btn btn-primary">Thêm mới bài viết <i
+                                class="fas fa-plus"></i></a>
+                        <a href="/admin/posts" class="btn btn-primary">Refresh <i
+                                class="fas fa-redo-alt"></i></a>
+                        <button id="btn-search" class="btn btn-primary">Tìm kiếm <i
+                                class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped mb-0" id="datatable-editable">
+                <thead>
+                <tr>
+                    <th>Tên bài viết</th>
+                    <th>Ảnh</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày sửa</th>
+                    <th>Thao tác</th>
+                </tr>
+                <tr>
+                    <form method="GET" id="search-form">
+                        <th>
+                            <input type="text" name="title" id="title" class="form-control search-input">
+                        </th>
+                        <th></th>
+                        <th>
+                            <select name="status" class="form-control search-select" id="status">
+                                <option value="">Tất cả</option>
+                                <option value="0">Nháp</option>
+                                <option value="1">Công khai</option>
+                            </select>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <input type="hidden" name="page" id="page">
+                    </form>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="post : ${posts}">
+                    <tr data-item-id="1">
+                        <td th:text="${post.title}"></td>
+                        <td><img th:src="@{${post.thumbnail}}" width="50px" height="50px"></td>
+                        <th:block th:if="${post.status} == 1">
+                            <td><span>Công khai</span></td>
+                        </th:block>
+                        <th:block th:if="${post.status} == 0">
+                            <td><span>Nháp</span></td>
+                        </th:block>
+                        <td th:text="${#dates.format(post.createdAt, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#dates.format(post.publishedAt, 'dd-MM-yyyy')}"></td>
+                        <td class="actions">
+                            <a th:href="@{/admin/posts/{slug}/{id}(id=${post.id},slug=${post.slug})}" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="#" th:data-id="${post.id}" class="on-default remove-row btn-delete-post"><i class="far fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <br>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
+        </div>
+    </section>
+
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/table.js}"></script>
+    <script th:inline="javascript">
+        var title, status, page;
+
+        $(function () {
+            let vars = parseUrl();
+            title = vars["title"] || ""
+            status = vars["status"] || ""
+            page = vars["page"] || "1"
+
+            $('#page').val(page)
+            $('#title').val(title)
+            $('#status').val(status)
+
+            pagination([[${totalPages}]], [[${currentPage}]]);
+        });
+
+        $('.btn-delete-post').click(function() {
+            let id = $(this).data("id");
+            swal({
+                title: 'Bạn chắc chắn muốn xóa!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#dd6b55",
+                cancelButtonText: "Không",
+                confirmButtonText: "Có",
+            }).then(function (rs) {
+                if (rs.value){
+                    $.ajax({
+                        url: '/api/admin/posts/'+id,
+                        type: 'DELETE',
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            toastr.success("Xóa bài viết thành công");
+                            setTimeout(function() {
+                                location.href = "/admin/posts/";
+                            }, 1000);
+                        },
+                        error: function(error) {
+                            toastr.warning(error.responseJSON.message);
+                        },
+                    })
+                }
+            })
+        })
+    </script>
+</th:block>
+</body>
+</html>

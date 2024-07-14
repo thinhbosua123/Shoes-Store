@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Liên hệ</title>
+    <th:block id="css-resources">
+
+    </th:block>
+</head>
+<body>
+<main class="main" id="main-content">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Liên hệ</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav>
+
+    <div class="container">
+        <div id="map"> <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=106.68268060684206%2C10.746499975936092%2C106.71012449264528%2C10.769035996904133&amp;layer=mapnik"  width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe></div><!-- End #map -->
+
+        <div class="row">
+<!--            <div class="col-md-8">-->
+<!--                <h2 class="light-title">Write <strong>Us</strong></h2>-->
+
+<!--                <form action="#">-->
+<!--                    <div class="form-group required-field">-->
+<!--                        <label for="contact-name">Name</label>-->
+<!--                        <input type="text" class="form-control" id="contact-name" name="contact-name" required>-->
+<!--                    </div>&lt;!&ndash; End .form-group &ndash;&gt;-->
+
+<!--                    <div class="form-group required-field">-->
+<!--                        <label for="contact-email">Email</label>-->
+<!--                        <input type="email" class="form-control" id="contact-email" name="contact-email" required>-->
+<!--                    </div>&lt;!&ndash; End .form-group &ndash;&gt;-->
+
+<!--                    <div class="form-group">-->
+<!--                        <label for="contact-phone">Phone Number</label>-->
+<!--                        <input type="tel" class="form-control" id="contact-phone" name="contact-phone">-->
+<!--                    </div>&lt;!&ndash; End .form-group &ndash;&gt;-->
+
+<!--                    <div class="form-group required-field">-->
+<!--                        <label for="contact-message">What’s on your mind?</label>-->
+<!--                        <textarea cols="30" rows="1" id="contact-message" class="form-control" name="contact-message" required></textarea>-->
+<!--                    </div>&lt;!&ndash; End .form-group &ndash;&gt;-->
+
+<!--                    <div class="form-footer">-->
+<!--                        <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--                    </div>&lt;!&ndash; End .form-footer &ndash;&gt;-->
+<!--                </form>-->
+<!--            </div>&lt;!&ndash; End .col-md-8 &ndash;&gt;-->
+
+            <div class="col-md-4">
+                <h2 class="light-title"><strong>Thông tin liên hệ</strong></h2>
+
+                <div class="contact-info">
+                    <div>
+                        <i class="icon-mobile"></i>
+                        <p><a href="tel:">0355154865</a></p>
+                    </div>
+                    <div>
+                        <i class="icon-mail-alt"></i>
+                        <p><a href="mailto:#">locdohong@gmail.com</a></p>
+                    </div>
+                </div><!-- End .contact-info -->
+            </div><!-- End .col-md-4 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+    <div class="mb-8"></div><!-- margin -->
+</main><!-- End .main -->
+<th:block id="js-resources">
+
+</th:block>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.name}"></title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+        <link rel="stylesheet" th:href="@{/adminlte/css/custom.css}">
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+
+    <header class="page-header">
+        <!--        <h2>Editable Tables</h2>-->
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><a href="/admin/products"><span>Danh sách sản phẩm</span></a></li>
+                <li><span th:text="${product.name}"></span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+    <form action="" id="formProduct">
+        <section class="card">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+                <h2 class="card-title" th:text="${product.name}"></h2>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <a href="/admin/products" class="btn btn-primary"><i
+                                    class="fas fa-chevron-left"></i> Trở về</a>
+                            <button type="submit" id="addToTable" class="btn btn-primary">Cập nhật sản phẩm <i
+                                    class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="card-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Thông tin sản phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Nhập số lượng sản phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Thêm ảnh feedback cho sản
+                            phẩm</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="tabs-1" role="tabpanel">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-outline">
+                                    <div class="card-body pad">
+                                        <div class="row">
+                                            <div class="col-lg-9 col-md-8">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label class="required-label" for="name">Tên sản phẩm <span
+                                                                class="required">*</span></label>
+                                                    </div>
+                                                    <input type="text" class="form-control" name="fullName"
+                                                           id="name"
+                                                           th:value="${product.name}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label class="required-label" for="description">Mô tả <span
+                                                                class="required">*</span></label>
+                                                    </div>
+                                                    <textarea class="textarea" id="description" name="description"
+                                                              th:text="${product.description}"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3 col-md-4">
+                                                <div class="form-group">
+                                                    <label for="status" class="required-label">Trạng thái</label>
+                                                    <select class="form-control" id="status">
+                                                        <option value="1" th:selected="${product.status == 1}">
+                                                            Mở bán
+                                                        </option>
+                                                        <option value="0" th:selected="${product.status == 0}">
+                                                            Không bán
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="brand" class="required-label">Nhãn hiệu sản phẩm
+                                                        <span
+                                                                class="required">*</span></label>
+                                                    <select class="form-control" id="brand">
+                                                        <th:block th:each="brand : ${brands}">
+                                                            <option th:value="${brand.id}" th:text="${brand.name}"
+                                                                    th:selected="${product.brand.id == brand.id}"></option>
+                                                        </th:block>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label class="control-label text-lg-right pt-2">Danh mục sản
+                                                            phẩm
+                                                            <span
+                                                                    class="required">*</span></label>
+                                                    </div>
+                                                    <select multiple data-plugin-selectTwo
+                                                            class="form-control populate"
+                                                            name="category[]" id="category">
+                                                        <th:block th:each="category : ${categories}">
+                                                            <option th:value="${category.id}"
+                                                                    th:text="${category.name}"></option>
+                                                        </th:block>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label class="required-label" for="price">Giá gốc sản phẩm
+                                                            (VNĐ)
+                                                            <span
+                                                                    class="required">*</span></label>
+                                                    </div>
+                                                    <input type="text" class="form-control text-price-input money"
+                                                           name="price"
+                                                           id="price" th:value="${product.price}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label class="required-label" for="salePrice">Giá bán ra của
+                                                            sản
+                                                            phẩm
+                                                            (VNĐ)
+                                                            <span class="required">*</span></label>
+                                                    </div>
+                                                    <input type="text" class="form-control text-price-input money"
+                                                           name="salePrice" id="salePrice"
+                                                           th:value="${product.salePrice}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div>
+                                                    <label class="required-label">Ảnh sản phẩm</label> <i>(Lưu ý:
+                                                    Nên để
+                                                    nền
+                                                    trắng)</i>
+                                                </div>
+                                                <div id="list-product-image" class="grid-list-img">
+                                                    <th:block th:each="img : ${product.images}">
+                                                        <div class="grid-item">
+                                                            <div class="img-container">
+                                                                <div class="img-div">
+                                                                    <img th:src="@{${img}}" alt="product img">
+                                                                </div>
+                                                            </div>
+                                                            <div class="remove-img"
+                                                                 onclick="removeProductImage(this)">
+                                                                <i class="fas fa-times-circle"></i>
+                                                            </div>
+                                                        </div>
+                                                    </th:block>
+                                                </div>
+                                                <button type="button" class="btn btn-info"
+                                                        id="btn-upload-product-img"
+                                                        data-toggle="modal" data-target="#choose-img-modal">
+                                                    Chọn ảnh
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Tab product size -->
+                    <div class="tab-pane" id="tabs-2" role="tabpanel">
+                        <div>
+                            <div class="row">
+                                <form class="form-inline">
+                                    <div class="form-group col-md-2">
+                                        <label for="size">Size giày</label>&emsp;
+                                        <select class="form-control" id="size">
+                                            <th:block th:each="size : ${sizeVN}">
+                                                <option th:value="${size}" th:text="${size}"></option>
+                                            </th:block>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="count">Số lượng có sẵn</label>&emsp;
+                                        <input type="number" class="form-control" id="count" min="0" value="0">
+                                    </div>
+                                    <div class=" form-group col-md-3">
+                                        <label for="">Thực hiện</label>
+                                        <br>
+                                        <button type="button" id="" class="btn btn-primary btn-update-size-count">Cập
+                                            nhật số lượng <i class="fas fa-plus"></i></button>
+                                        <br>
+                                        <span class="invalid-feedback"
+                                              id="invalid-feedback-size">Vui lòng nhập số lượng</span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Size giày</th>
+                                    <th>Số lượng có sẵn</th>
+                                </tr>
+                                </thead>
+                                <tbody class="list-product-size">
+                                <th:block th:each="ps : ${productSizes}">
+                                    <tr>
+                                        <td th:text="${ps.size}" class="product-size" th:data-size="${ps.size}"></td>
+                                        <td th:text="${ps.quantity}" class="product-count"></td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab onfeet image -->
+                    <div class="tab-pane fade" id="tabs-3" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn-update-feedback-img">
+                                        <span>Cập nhật</span>
+                                    </button>
+                                    <button type="button" class="btn btn-info" id="btn-upload-feedback-img">
+                                        Thêm ảnh
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="col-12">
+                                    <div>
+                                        <label>Hình ảnh phản hổi</label>
+                                    </div>
+                                    <div id="list-onfeet-image" class="grid-list-img">
+                                        <th:block th:each="img : ${product.imageFeedBack}">
+                                            <div class="grid-item">
+                                                <div class="img-container">
+                                                    <div class="img-div">
+                                                        <img th:src="${img}" alt="product img">
+                                                    </div>
+                                                </div>
+                                                <div class="remove-img" onclick="removeProductImage(this)">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </div>
+                                            </div>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+    <th:block th:replace="~{fragment/choose_image_modal :: choose-img-modal}"></th:block>
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/js/list.min.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/modal_image.js}"></script>
+    <script th:inline="javascript">
+        $(function () {
+            let categories = [[${product.categories}]];
+            for (category of categories) {
+                $('#category option[value=' + category.id + ']').attr('selected', 'selected');
+            }
+            $('#category').trigger("change");
+            $('#description').summernote(
+                {
+                    height: 450,
+                    focus: true
+                }
+            )
+            let imgs = [[${images}]];
+            let tmp = [];
+            for (img of imgs) {
+                tmp.push({"grid-item-img": img})
+            }
+            initListImg(tmp);
+        })
+
+        $('#btn-upload-product-img').click(function () {
+            $('#choose-img-modal').modal('show');
+            $('.btn-choose-img').on('click', function (event) {
+                let url = $('#list-user-img .grid-item.choosen .grid-item-img').attr('src');
+                if (url == "" || url == null) {
+                    toastr.warning("Bạn chưa chọn ảnh");
+                    return;
+                }
+                closeChooseImgModal();
+                $('.btn-choose-img').off('click');
+                $('#list-product-image').append(`
+                    <div class="grid-item">
+                        <div class="img-container">
+                            <div class="img-div">
+                                <img src="${url}" alt="product img">
+                            </div>
+                        </div>
+                        <div class="remove-img" onclick="removeProductImage(this)">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>`)
+            });
+        });
+
+        $('#btn-upload-feedback-img').click(function () {
+            $('#choose-img-modal').modal('show');
+            $('.btn-choose-img').on('click', function (event) {
+                let url = $('#list-user-img .grid-item.choosen .grid-item-img').attr('src');
+                if (url == "" || url == null) {
+                    toastr.warning("Bạn chưa chọn ảnh");
+                    return;
+                }
+                closeChooseImgModal();
+                $('.btn-choose-img').off('click');
+                $('#list-onfeet-image').append(`
+                    <div class="grid-item">
+                        <div class="img-container">
+                            <div class="img-div">
+                                <img src="${url}" alt="product img">
+                            </div>
+                        </div>
+                        <div class="remove-img" onclick="removeProductImage(this)">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>`)
+            });
+        })
+
+        $('.btn-update-feedback-img').click(function () {
+            let feedback_images = [];
+            $('#list-onfeet-image .grid-item .img-container .img-div img').each(function () {
+                feedback_images.push($(this).attr('src'));
+            })
+
+            req = {
+                feedback_images: feedback_images
+            }
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/api/admin/products/' + [[${product.id}]] + '/update-feedback-image',
+                type: 'PUT',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    toastr.success("Cập nhật thành công");
+                },
+                error: function (data) {
+                    toastr.warning(data.responseJSON.message);
+                }
+            });
+        })
+
+        function removeProductImage(btn) {
+            $(btn).parent().remove();
+        }
+
+        $("#formProduct").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
+                fullName: {
+                    required: true,
+                    maxlength: 100,
+                },
+                description: {
+                    required: true,
+                },
+                brand: {
+                    required: true,
+                },
+                price: {
+                    required: true,
+                },
+                salePrice: {
+                    required: true,
+                },
+                image: {
+                    required: true,
+                }
+            },
+            messages: {
+                fullName: {
+                    required: "Tên sản phẩm trống. Vui lòng nhập tên sản phẩm!",
+                    maxlength: "Tên sản phẩm có độ dài tối đa 100 ký tự!"
+                },
+                description: {
+                    required: "Mô tả sản phẩm trống. Vui lòng viết mô tả cho sản phẩm!"
+                },
+                brand: {
+                    required: "Nhãn hiệu sản phẩm trống. Vui lòng nhập nhãn hiệu cho sản phẩm!"
+                },
+                price: {
+                    required: "Giá sản phẩm trống. Vui lòng nhập giá sản phẩm!",
+                },
+                salePrice: {
+                    required: "Giá bán sản phẩm trống. Vui lòng nhập giá bán sản phẩm!",
+                },
+                image: {
+                    required: "Ảnh sản phẩm trống. Vui lòng chọn ảnh cho sản phẩm!",
+                }
+            },
+
+            submitHandler: function () {
+                let id = [[${product.id}]];
+                let name = $("#name").val();
+                let description = $("#description").val();
+                let brand = $("#brand").val();
+                let category = $("#category").val();
+                let price = parseInt($("#price").val());
+                let salePrice = parseInt($("#salePrice").val());
+                let status = $("#status").val();
+                // if ($("#status").val() === 1){
+                //     status = 1;
+                // }
+                let productImgs = [];
+                $('#list-product-image .grid-item .img-container .img-div img').each(function () {
+                    productImgs.push($(this).attr('src'));
+                })
+
+                req = {
+                    id: id,
+                    name: name,
+                    description: description,
+                    brand_id: brand,
+                    category_ids: category,
+                    price: price,
+                    salePrice: salePrice,
+                    product_images: productImgs,
+                    status: status
+                }
+                let myJson = JSON.stringify(req)
+                $.ajax({
+                    url: '/api/admin/products/' + [[${product.id}]],
+                    type: 'PUT',
+                    data: myJson,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        toastr.success("Cập nhật sản phẩm thành công!");
+                    },
+                    error: function (error) {
+                        toastr.warning(error.responseJSON.message);
+                    }
+                })
+            }
+        })
+
+        $('.btn-update-size-count').click(function (event) {
+            event.preventDefault();
+            let size = parseInt($('#size').val());
+            let count = parseInt($('#count').val());
+            if (isNaN(count)) {
+                $('#invalid-feedback-size').show();
+                return;
+            }
+            req = {
+                size: size,
+                count: count,
+                product_id: [[${product.id}]]
+            }
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/api/admin/products/sizes',
+                type: 'PUT',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    let productSize = $('.product-size[data-size=' + size + ']')
+                    if (productSize.length === 0) {
+                        $('.list-product-size').append(`<tr><td class="product-size" data-size="${size}">${size}</td><td class="product-count">${count}</td></tr>`);
+                    } else {
+                        $(productSize).parent().find('.product-count').text(count);
+                    }
+                    toastr.success("Cập nhật thành công");
+                },
+                error: function (data) {
+                    toastr.warning(data.responseJSON.message);
+                },
+                complete: function () {
+                    $('#invalid-feedback-size').hide();
+                }
+            });
+        })
+    </script>
+</th:block>
+</body>
+</html>

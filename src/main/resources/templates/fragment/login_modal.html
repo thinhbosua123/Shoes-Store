@@ -1,0 +1,84 @@
+<!-- Modal -->
+<th:block th:fragment="login_modal">
+<div class="modal fade " id="exampleModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng nhập</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row row-sparse">
+                    <div class="col-md-12">
+                        <form class="mb-1" id="loginForm">
+                            <label for="login_email">Email <span class="required">*</span></label>
+                            <input type="email" class="form-input form-wide mb-2" name="login_email" id="login_email">
+                            <br>
+                            <label for="login_password">Mật khẩu <span class="required">*</span></label>
+                            <input type="password" class="form-input form-wide mb-2" name="login_password"
+                                   id="login_password">
+                            <br>
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary btn-md">Đăng nhập</button>
+                                <button  data-toggle="modal" href="#exampleModalRegister" data-dismiss="modal" class="btn btn-secondary btn-md">Đăng ký</button>
+                            </div><!-- End .form-footer -->
+                        </form>
+<!--                        <div class="btn-group">-->
+<!--                            <a class="btn btn-social-login btn-md btn-gplus mb-1"><i-->
+<!--                                    class="fab fa-google pt-1"></i><span>Google</span></a>-->
+<!--                            <a class="btn btn-social-login btn-md btn-facebook mb-1"><i class="icon-facebook"></i><span>Facebook</span></a>-->
+<!--                        </div>-->
+                    </div><!-- End .col-md-6 -->
+                </div><!-- End .row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="exampleModalRegister" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Đăng ký</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row row-sparse">
+                    <div class="col-md-12">
+                        <form action="#" id="registerForm">
+                            <label for="register_full_name">Họ và tên <span class="required">*</span></label>
+                            <input type="text" class="form-input form-wide mb-2" name="register_full_name" id="register_full_name">
+                            <br>
+                            <label for="register_phone">Số điện thoại <span class="required">*</span></label>
+                            <input type="text" class="form-input form-wide mb-2" name="register_phone" id="register_phone">
+                            <br>
+                            <label for="register_email">Email <span class="required">*</span></label>
+                            <input type="email" class="form-input form-wide mb-2" name="register_email" id="register_email">
+                            <br>
+                            <label for="register_password">Mật khẩu <span class="required">*</span></label>
+                            <input type="password" class="form-input form-wide mb-2" name="register_password" id="register_password">
+                            <br>
+                            <label for="register_confirm_password">Nhập lại mật khẩu <span class="required">*</span></label>
+                            <input type="password" class="form-input form-wide mb-2" name="register_confirm_password" id="register_confirm_password">
+
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary btn-md">Đăng ký</button>
+                                <button  data-toggle="modal" href="#exampleModal" data-dismiss="modal" class="btn btn-secondary btn-md">Quay lại</button>
+                            </div><!-- End .form-footer -->
+                        </form>
+                    </div><!-- End .col-md-6 -->
+                </div><!-- End .row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+</th:block>

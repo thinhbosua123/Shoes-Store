@@ -1,0 +1,38 @@
+<th:block th:fragment="header">
+<header class="header">
+    <div class="logo-container">
+        <a href="/admin" class="logo"> <img th:src="@{https://cdn.shopify.com/s/files/1/0260/8830/8826/products/Jordan1_700x700.png}" width="75" height="35" alt="Porto Admin"/>
+        </a>
+    </div>
+
+    <div class="header-right">
+        <span class="separator"></span>
+        <div id="userbox" class="userbox">
+            <a href="#" data-toggle="dropdown">
+                <figure class="profile-picture">
+                    <img th:src="@{/shop/images/avatar/avatar.png}" alt="Joseph Doe" class="rounded-circle"
+                         data-lock-picture="img/%21logged-user.jpg"/>
+                </figure>
+                <div class="profile-info" >
+                    <span class="name">[[${#httpServletRequest.remoteUser}]]</span>
+                    <span class="role">Administrator</span>
+                </div>
+                <i class="fa custom-caret"></i>
+            </a>
+            <div class="dropdown-menu">
+                <ul class="list-unstyled mb-2">
+                    <li class="divider"></li>
+                    <li>
+                        <a role="menuitem" tabindex="-1" href="/tai-khoan"><i
+                                class="bx bx-user-circle"></i>Thông tin tài khoản</a>
+                    </li>
+                    <li>
+                        <a role="menuitem" tabindex="-1" href="/api/logout"><i class="bx bx-power-off"></i> Đăng xuất</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</header>
+</th:block>

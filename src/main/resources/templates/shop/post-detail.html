@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Tin tức</title>
+    <th:block id="css-resources">
+
+    </th:block>
+</head>
+<body>
+<main class="main" id="main-content">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}"></li>
+            </ol>
+        </div><!-- End .container -->
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <article class="post single">
+                    <div class="post-media">
+                        <div class="post-slider owl-carousel owl-theme">
+                            <img th:src="@{${post.thumbnail}}" alt="${post.title}">
+                        </div><!-- End .post-slider -->
+                    </div><!-- End .post-media -->
+
+                    <div class="post-body">
+                        <div class="post-date">
+                            <span class="month" th:text="${#dates.format(post.publishedAt, 'MM yyyy')}"></span>
+                        </div><!-- End .post-date -->
+
+                        <h2 class="post-title" th:text="${post.title}"></h2>
+
+                        <div class="post-meta">
+                            <i class="icon-calendar"></i><span
+                                th:text="${#dates.format(post.publishedAt, 'MM yyyy')}"></span>
+                            <span><i class="icon-user"></i>By <a th:text="${post.createdBy.fullName}"></a></span>
+                        </div><!-- End .post-meta -->
+
+                        <div class="post-content">
+                            <p th:utext="${post.description}"></p>
+                        </div><!-- End .post-content -->
+
+<!--                        <div class="post-share">-->
+<!--                            <h3>-->
+<!--                                <i class="icon-forward"></i>-->
+<!--                                Share this post-->
+<!--                            </h3>-->
+
+<!--                            <div class="social-icons">-->
+<!--                                <a href="#" class="social-icon social-facebook" target="_blank" title="Facebook">-->
+<!--                                    <i class="icon-facebook"></i>-->
+<!--                                </a>-->
+<!--                                <a href="#" class="social-icon social-twitter" target="_blank" title="Twitter">-->
+<!--                                    <i class="icon-twitter"></i>-->
+<!--                                </a>-->
+<!--                                <a href="#" class="social-icon social-linkedin" target="_blank" title="Linkedin">-->
+<!--                                    <i class="fab fa-linkedin-in"></i>-->
+<!--                                </a>-->
+<!--                                <a href="#" class="social-icon social-gplus" target="_blank" title="Google +">-->
+<!--                                    <i class="fab fa-google-plus-g"></i>-->
+<!--                                </a>-->
+<!--                                <a href="#" class="social-icon social-mail" target="_blank" title="Email">-->
+<!--                                    <i class="icon-mail-alt"></i>-->
+<!--                                </a>-->
+<!--                            </div>&lt;!&ndash; End .social-icons &ndash;&gt;-->
+<!--                        </div>&lt;!&ndash; End .post-share &ndash;&gt;-->
+
+                        <div class="list-comment">
+                            <th:block th:each="comment : ${post.comments}">
+                                <div class="post-author">
+                                    <!--                                    <h3 class="icon-user" th:text="${comment.user.email}"></h3>-->
+                                    <figure>
+                                       <img th:src="@{/shop/images/avatar/avatar.png}" width="30px" height="30px" alt="author">
+                                    </figure>
+                                    <div class="author-content">
+                                        <h5 th:text="${comment.user.fullName}"></h5>
+                                        <p th:text="${comment.content}"></p>
+                                    </div><!-- End .author.content -->
+
+                                </div><!-- End .post-author -->
+                            </th:block>
+                        </div>
+
+                        <div class="comment-respond">
+<!--                            <h3>Viết bình luận của bạn</h3>-->
+                            <form action="#" method="post" id="formCommentPost">
+                                <div class="form-group required-field">
+                                    <label>Viết bình luận của bạn</label>
+                                    <textarea name="post_comment" class="form-control post-comment"></textarea>
+                                </div><!-- End .form-group -->
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-primary btn-post-comment">Gửi bình luận
+                                    </button>
+                                </div><!-- End .form-footer -->
+                            </form>
+                        </div><!-- End .comment-respond -->
+                    </div><!-- End .post-body -->
+                </article><!-- End .post -->
+
+                <div class="related-posts">
+                    <h4 class="light-title">Bài viết liên quan</h4>
+
+                    <div class="owl-carousel owl-theme related-posts-carousel">
+                        <th:block th:each="postList :${postList}">
+                            <article class="post">
+                                <div class="post-media">
+                                    <a th:href="@{/tin-tuc/{slug}/{id}(id=${postList.id},slug=${postList.slug})}">
+                                        <img th:src="@{${postList.thumbnail}}" th:alt="${postList.title}">
+                                    </a>
+                                </div><!-- End .post-media -->
+
+                                <div class="post-body">
+                                    <div class="post-date">
+                                        <span class="month"
+                                              th:text="${#dates.format(postList.publishedAt, 'MM yyyy')}"></span></p>
+                                    </div><!-- End .post-date -->
+
+                                    <h2 class="post-title">
+                                        <a th:href="@{/tin-tuc/{slug}/{id}(id=${postList.id},slug=${postList.slug})}"
+                                           th:text="${postList.title}"></a>
+                                    </h2>
+
+                                    <div class="post-content">
+                                        <p th:utext="${postList.content}"></p>
+
+                                        <a th:href="@{/tin-tuc/{slug}/{id}(id=${postList.id},slug=${postList.slug})}"
+                                           class="read-more">Read More <i class="icon-angle-double-right"></i></a>
+                                    </div><!-- End .post-content -->
+                                </div><!-- End .post-body -->
+                            </article>
+                        </th:block>
+                    </div><!-- End .owl-carousel -->
+                </div><!-- End .related-posts -->
+            </div><!-- End .col-lg-9 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+    <div class="mb-6"></div><!-- margin -->
+</main><!-- End .main -->
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        $("#formCommentPost").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
+                post_comment: {
+                    required: true,
+                    maxlength: 300
+                }
+            },
+            messages: {
+                post_comment: {
+                    required: "Vui lòng nhập nội dung bình luận!",
+                    maxlength: "Nội dung bình luận có độ dài tối đa 300 ký tự!",
+                }
+            },
+
+            submitHandler: function () {
+                let content = $(".post-comment").val();
+                let postId = [[${post.id}]];
+                req = {
+                    content: content,
+                    postId: postId
+                }
+                let myJson = JSON.stringify(req)
+                $.ajax({
+                    url: "/api/comments/post",
+                    type: 'POST',
+                    data: myJson,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $(".list-comment").append(`
+                                <div class="post-author">
+                                        <figure>
+                                            <a href="#">
+                                                <img src="/shop/images/blog/author.jpg" width="30px" height="30px" alt="author">
+                                            </a>
+                                        </figure>
+                                        <div class="author-content">
+<!--                                            <h4>${data.user.fullName}</h4>-->
+                                            <p>${data.content}</p>
+                                        </div>
+                                </div>
+                            `)
+                        $(".post-comment").val('');
+                    },
+                    error: function (error) {
+                        toastr.warning("Vui lòng đăng nhập để bình luận");
+                        setTimeout(function () {
+                            $('#exampleModal').modal('show');
+                        }, 500);
+                    }
+                });
+            }
+        })
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}"></title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+        <!--        <link rel="stylesheet" th:href="@{/adminlte/vendor/select2/css/select2.css}">-->
+        <!--        <link rel="stylesheet" th:href="@{/adminlte/vendor/select2-bootstrap-theme/select2-bootstrap.min.css}">-->
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <!--        <h2>Editable Tables</h2>-->
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><a href="/admin/posts"><span>Danh sách bài viết</span></a></li>
+                <li><span th:text="${post.title}"></span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+    <form action="" id="formPost">
+        <section class="card">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+                <h2 class="card-title">Sửa:  <span th:text="${post.title}"></span></h2>
+                <br>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="mb-3">
+                            <a href="/admin/posts" class="btn btn-primary"><i
+                                    class="fas fa-chevron-left"></i> Trở về</a>
+                            <button type="submit" id="addToTable" class="btn btn-primary">Sửa bài viết <i
+                                    class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-outline">
+                            <div class="card-body pad">
+
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-8">
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="required-label" for="title">Tiêu đề bài viết <span
+                                                        class="required">*</span></label>
+                                            </div>
+                                            <input type="text" class="form-control" name="title" id="title"
+                                                   th:value="${post.title}">
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="required-label" for="description">Nội dung <span
+                                                        class="required">*</span></label>
+                                            </div>
+                                            <textarea class="textarea" id="content" name="content"
+                                                      th:text="${post.content}"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div>
+                                                <label class="required-label" for="description">Mô tả <span
+                                                        class="required">*</span></label>
+                                            </div>
+                                            <textarea class="textarea" id="description" name="description"
+                                                      th:text="${post.description}"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4">
+                                        <div class="form-group">
+                                            <label for="status" class="required-label">Trạng thái</label>
+                                            <select class="form-control" id="status">
+                                                <option value="0" th:selected="(${post.status} == 0)">Nháp</option>
+                                                <option value="1" th:selected="(${post.status} == 1)">Công khai</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-label">Ảnh thumbnail</label>
+                                            <div class="thumbnail-container">
+                                                <div class="img-div">
+                                                    <img id="preview-img"
+                                                         th:src="@{${(post.thumbnail != null && !#strings.isEmpty(post.thumbnail)) ? post.thumbnail : '/shop/image/noimage.png'}}"
+                                                         alt="Thumbnail post">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-info" data-toggle="modal"
+                                                    data-target="#choose-img-modal">
+                                                Chọn ảnh
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>
+
+
+    <th:block th:replace="~{fragment/choose_image_modal :: choose-img-modal}"></th:block>
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/js/list.min.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/modal_image.js}"></script>
+    <script th:inline="javascript">
+        $(function () {
+            $('#description').summernote(
+                {
+                    height: 350,
+                    focus: true
+                }
+            )
+            $('#content').summernote(
+                {
+                    height: 250,
+                    focus: true
+                }
+            )
+            let imgs = [[${images}]];
+            let tmp = [];
+            for (img of imgs) {
+                tmp.push({"grid-item-img": img})
+            }
+            initListImg(tmp);
+        })
+
+        $('.btn-choose-img').click(function () {
+            let url = $('#list-user-img .grid-item.choosen .grid-item-img').attr('src');
+            if (url == "" || url == null) {
+                toastr.warning("Bạn chưa chọn ảnh");
+                return;
+            }
+            closeChooseImgModal();
+            $('#preview-img').attr('src', url);
+        })
+
+        $("#formPost").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
+                title: {
+                    required: true,
+                    maxlength: 300,
+                },
+                content: {
+                    required: true,
+                },
+                description: {
+                    required: true,
+                },
+            },
+            messages: {
+                title: {
+                    required: "Tiêu đề trống. Vui lòng nhập tiêu đề bài viết!",
+                    maxlength: "Tiêu đề có độ dài tối đa 300 ký tự!"
+                },
+                description: {
+                    required: "Nội dung bài viết trống. Vui lòng viết nội dung cho bài viết!"
+                },
+                content: {
+                    required: "Mô tả bài viết trống. Vui lòng viết mô tả cho bài viết!"
+                }
+            },
+            submitHandler: function () {
+                let title = $('#title').val();
+                let description = $('#description').val();
+                let content = $('#content').val();
+                let status = $('#status').val();
+                if (status != "0" && status != "1") {
+                    toastr.warning("Trạng thái bài viết không hợp lệ");
+                    return;
+                }
+                let image = $('#preview-img').attr('src');
+
+                req = {
+                    title: title,
+                    description: description,
+                    content: content,
+                    status: status,
+                    image: image
+                }
+                let myJson = JSON.stringify(req)
+                $.ajax({
+                    url: '/api/admin/posts/'+[[${post.id}]],
+                    type: 'PUT',
+                    data: myJson,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        toastr.success("Cập nhật bài viết thành công!");
+                        setTimeout(function () {
+                            location.href = "/admin/posts/";
+                        }, 1000);
+                    },
+                    error: function (error) {
+                        toastr.warning(error.responseJSON.message);
+                    }
+                })
+            }
+        })
+    </script>
+</th:block>
+</body>
+</html>

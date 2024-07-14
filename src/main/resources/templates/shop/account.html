@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin tài khoản</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+    </th:block>
+</head>
+<body>
+<main id="main-content" class="container">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="left-sidebar">
+                <div class="header">
+                    <div class="avatar"><img class="img-fluid" th:src="@{/shop/images/avatar/avatar4.png}" alt="avatar"/></div>
+                    <div class="user-info">
+                        <div class="user-name" th:text="${user_fullname}"></div>
+                        <div class="edit-profile">Chỉnh sửa tài khoản</div>
+                    </div>
+                </div>
+                <div class="break-line"></div>
+                <div class="nav-sidebar">
+                    <a class="account nav-item" href="/tai-khoan">Quản lý tài khoản</a>
+                    <a class="buying-order nav-item" href="/tai-khoan/lich-su-giao-dich">Quản lý đơn hàng</a>
+                    <a class="btn btn-primary red-btn sign-out-btn" href="/api/logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 main-content-wrapper">
+            <div class="main-content">
+                <h1 class="account-title">Thông tin tài khoản</h1>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="profile-setting" role="tabpanel" aria-labelledby="profile-setting-tab">
+                        <form class="setting-box">
+                            <div class="full-name item-row col-md-10">
+                                <div class="text required-label">Họ tên</div>
+                                <div>
+                                    <input class="form-control" th:value="${user_fullname}" id="in-user-fullname"/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="email item-row col-md-10">
+                                <div class="text required-label">Email</div>
+                                <input class="form-control" disabled="disabled" th:value="${user_email}"/>
+                            </div>
+                            <div class="password item-row col-md-10">
+                                <div class="text required-label">Mật khẩu</div>
+                                <div class="password-wrapper">
+                                    <input class="form-control" type="password" disabled="disabled" autocomplete="autocomplete" value="******"/>
+                                    <a class="change-password text-btn" href="" data-toggle="modal" data-target="#changePassword">Đổi mật khẩu</a>
+                                </div>
+                            </div>
+                            <div class="phone item-row col-md-10">
+                                <div class="text required-label">Số điện thoại</div>
+                                <div>
+                                    <input class="form-control" th:value="${user_phone}" id="in-user-phone"/>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="address item-row col-md-10">
+                                <div class="text">Địa chỉ</div>
+                                <div>
+                                    <textarea class="form-control" rows="5" th:text="${user_address}" id="in-user-address"></textarea>
+                                </div>
+                            </div>
+                            <div class="update-btn-wrapper item-row col-md-10">
+                                <div class="btn btn-primary red-btn update-btn">Cập nhật</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal change password -->
+    <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordLabel">Đổi mật khẩu</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="current-password item-row">
+                        <div class="text required-label">Mật khẩu cũ</div>
+                        <div class="password-wrapper-in">
+                            <input class="form-control" type="password" autocomplete="autocomplete" id="old-password"/>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="new-password item-row">
+                        <div class="text required-label">Mật khẩu mới</div>
+                        <div class="password-wrapper-in">
+                            <input class="form-control" type="password" autocomplete="autocomplete" id="new-password"/>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="new-password-confirm item-row">
+                        <div class="text required-label">Nhập lại mật khẩu mới</div>
+                        <div class="password-wrapper-in">
+                            <input class="form-control" type="password" autocomplete="autocomplete" id="retype-password"/>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" type="button" data-dismiss="modal">Huỷ bỏ</button>
+                    <button class="btn btn-primary red-btn btn-confirm-change-password" type="button">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        $('.btn-confirm-change-password').click(function() {
+            let oldPassword = $('#old-password').val();
+            let newPassword = $('#new-password').val();
+            let retypePassword = $('#retype-password').val();
+            let isValid = true;
+
+            if (oldPassword.length < 4 || oldPassword.length > 20) {
+                oldPasswordInvalid = $('#old-password').next();
+                oldPasswordInvalid.css('display', 'block');
+                oldPasswordInvalid.html('Độ dài mật khẩu cũ từ 4 - 20 ký tự');
+                isValid = false;
+            }
+
+            if (newPassword.length < 4 || newPassword.length > 20) {
+                newPasswordInvalid = $('#new-password').next();
+                newPasswordInvalid.css('display', 'block');
+                newPasswordInvalid.html('Độ dài mật khẩu mới từ 4 - 20 ký tự');
+                isValid = false;
+            }
+
+            if (retypePassword.length < 4 || newPassword.length > 20) {
+                retypePasswordInvalid = $('#retype-password').next();
+                retypePasswordInvalid.css('display', 'block');
+                retypePasswordInvalid.html('Độ dài xác thực mật khẩu từ 4 - 20 ký tự');
+                isValid = false;
+            } else if (newPassword !== retypePassword) {
+                retypePasswordInvalid = $('#retype-password').next();
+                retypePasswordInvalid.css('display', 'block');
+                retypePasswordInvalid.html('Mật khẩu mới và xác nhận mật khẩu không giống nhau');
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    old_password: oldPassword,
+                    new_password: newPassword
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/change-password',
+                    type: 'POST',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        toastr.success("Đổi mật khẩu thành công");
+                        clearInputChangePassword();
+                        $('.modal').modal('hide');
+                        formatMoney();
+                    },
+                    error: function(data) {
+                        toastr.warning(data.responseJSON.message);
+                    },
+                });
+            }
+        })
+
+        function clearInputChangePassword() {
+            $('#old-password').val('');
+            $('#old-password').next().hide();
+            $('#new-password').val('');
+            $('#new-password').next().hide();
+            $('#retype-password').val('');
+            $('#retype-password').next().hide();
+        }
+
+        $("#changePassword").on("hidden.bs.modal", function () {
+            clearInputChangePassword();
+        });
+
+        $('.update-btn').click(function() {
+            let phoneValue = $("#in-user-phone").val();
+            let fullNameValue = $("#in-user-fullname").val();
+            let addressValue = $('#in-user-address').val();
+            let isValid = true;
+
+            let phoneFormat = new RegExp(/((09|03|07|08|05)+([0-9]{8})\b)/g);
+            if (phoneValue == "") {
+                phoneInvalid = $("#in-user-phone").next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Vui lòng nhập số điện thoại');
+                isValid = false;
+            } else if (!phoneFormat.test(phoneValue)) {
+                phoneInvalid = $("#in-user-phone").next();
+                phoneInvalid.css('display', 'block');
+                phoneInvalid.html('Số điện thoại không hợp lệ');
+                isValid = false;
+            }
+
+            if (fullNameValue == "") {
+                fullNameInvalid = $("#in-user-fullname").next();
+                fullNameInvalid.css('display', 'block');
+                fullNameInvalid.html('Vui lòng nhập họ tên');
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    phone: phoneValue,
+                    full_name: fullNameValue,
+                    address: addressValue
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/update-profile',
+                    type: 'PUT',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data) {
+                        signedValidate(true, fullNameValue);
+                        toastr.success("Cập nhật profile thành công");
+                    },
+                    error: function(data) {
+                        toastr.warning(data.responseJSON.message);
+                    },
+                    complete: function() {
+                        $("#in-user-fullname").next().hide();
+                        $("#in-user-phone").next().hide();
+                    }
+                });
+            }
+        })
+    </script>
+</th:block>
+</body>
+</html>

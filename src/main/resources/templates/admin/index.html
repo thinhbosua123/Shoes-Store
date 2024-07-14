@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <title>Trang quản trị </title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+        <style>
+            #barChart {
+                display: block;
+                box-sizing: border-box;
+                height: 411px !important;
+                width: 411px !important;
+                margin: auto;
+            }
+
+            #doughnutBrand {
+                display: block;
+                box-sizing: border-box;
+                height: 411px !important;
+                width: 411px !important;
+                margin: auto;
+            }
+
+            #myChartProduct {
+                display: block;
+                box-sizing: border-box;
+                height: 409px !important;
+                width: 775px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/admin">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row mb-3">
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-primary mb-3">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-primary">
+                                        <i class="fas fa-life-ring"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Số lượng sản phẩm</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="product-count"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/products">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-secondary">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-warning">
+                                        <i class="fas fa-certificate"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tổng số danh mục</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="category-count"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/categories">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-secondary">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-success">
+                                        <i class="fas fa-mail-bulk"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tổng số bài viết</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="post-count"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/posts">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-tertiary mb-3">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-secondary">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tổng số đơn hàng</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="order-count"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/orders">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-quaternary">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-info">
+                                        <i class="fas fa-bookmark"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tổng số nhãn hiệu</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="brands-count"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/brands">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-xl-4">
+                    <section class="card card-featured-left card-featured-tertiary mb-3">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-danger">
+                                        <i class="fas fa-user-injured"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tổng số user</h4>
+                                        <div class="info">
+                                            <strong class="amount" id="countUser"></strong>
+                                        </div>
+                                    </div>
+                                    <div class="summary-footer">
+                                        <a class="text-muted text-uppercase" href="/admin/users">(Xem chi tiết)</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pt-4">
+        <div class="col-lg-7 mb-4 mb-lg-0">
+            <section class="card">
+                <header class="card-header">
+                    <div class="card-actions">
+                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                    </div>
+                    <h2 class="card-title">Thống kê doanh số</h2>
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-md-3">
+                            <input type="date" id="datepicker" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" id="datepicker2" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" id="btn-dashboard-filter" class="btn btn-primary btn-sm"
+                                    value="Lọc kết quả">Lọc kết quả
+                            </button>
+                            <a href="/admin" class="btn btn-primary btn-sm">refesh</a>
+                        </div>
+                    </div>
+                </header>
+                <div class="card-body">
+                    <div class="chart chart-md" id="chart"></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-5">
+            <section class="card">
+                <header class="card-header">
+                    <div class="card-actions">
+                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                    </div>
+                    <h2 class="card-title">Số lượng Sản phẩm được mua theo danh mục</h2>
+                </header>
+                <div class="card-body">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+    </div>
+    <div class="row pt-4">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            <section class="card">
+                <header class="card-header">
+                    <div class="card-actions">
+                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                    </div>
+                    <h2 class="card-title">Số lượng sản phẩm được mua theo nhãn hiệu</h2>
+                </header>
+                <div class="card-body">
+                    <canvas id="doughnutBrand"></canvas>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-7">
+            <section class="card">
+                <header class="card-header">
+                    <div class="card-actions">
+                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                    </div>
+                    <h2 class="card-title">10 Sản phẩm bán chạy nhất trong tháng</h2>
+                </header>
+                <div class="card-body">
+                    <canvas id="myChartProduct"></canvas>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+<th:block id="js-resources">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/chart.js/3.1.0/dist/chart.min.js}"></script>
+    <script>
+        let dataChartProductOrderedByCategory = [];
+        let labelChartProductOrderedByCategory = [];
+
+        let dataChartProductOrderedByBrand = [];
+        let labelChartProductOrderedByBrand = [];
+
+        let dataChartProductOrdered = [];
+        let labelChartProductOrdered = [];
+
+        getListProductOrderedByCategory();
+        getListProductOrderedByBrand();
+        getListProductOrder();
+
+        function getListProductOrderedByCategory() {
+            $.ajax({
+                url: '/api/admin/product-order-categories',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (res) {
+                    let data_get = res;
+                    for (var i = 0; i < data_get.length; i++) {
+                        dataChartProductOrderedByCategory.push(data_get[i].value);
+                        labelChartProductOrderedByCategory.push(data_get[i].label);
+                    }
+                    if ($("#barChart").length) {
+                        var barChartCanvas = $("#barChart").get(0).getContext("2d");
+                        // This will get the first returned node in the jQuery collection.
+                        var barChart = new Chart(barChartCanvas, {
+                            type: 'polarArea',
+                            data: data,
+                            options: doughnutPieOptions
+                        });
+                    }
+                }
+            })
+        }
+
+        let data = {
+            labels: labelChartProductOrderedByCategory,
+            datasets: [{
+                data: dataChartProductOrderedByCategory,
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(201, 203, 207)',
+                    'rgb(54, 162, 235)'
+                ],
+            }],
+        };
+
+        let doughnutPieOptions = {
+            responsive: true,
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+
+        function getListProductOrderedByBrand() {
+            $.ajax({
+                url: '/api/admin/product-order-brands',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (res) {
+                    let data_get = res;
+                    for (var i = 0; i < data_get.length; i++) {
+                        dataChartProductOrderedByBrand.push(data_get[i].value);
+                        labelChartProductOrderedByBrand.push(data_get[i].label);
+                    }
+                    if ($("#doughnutBrand").length) {
+                        var barChartCanvasBrand = $("#doughnutBrand").get(0).getContext("2d");
+                        // This will get the first returned node in the jQuery collection.
+                        var barChart = new Chart(barChartCanvasBrand, {
+                            type: 'polarArea',
+                            data: dataBrand,
+                            options: doughnutPieOptionsBrand
+                        });
+                    }
+                }
+            })
+        }
+
+        let dataBrand = {
+            labels: labelChartProductOrderedByBrand,
+            datasets: [{
+                data: dataChartProductOrderedByBrand,
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(201, 203, 207)',
+                    'rgb(54, 162, 235)'
+                ],
+            }],
+        };
+
+        let doughnutPieOptionsBrand = {
+            responsive: true,
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+
+        function getListProductOrder() {
+            $.ajax({
+                url: '/api/admin/product-order',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (res) {
+                    let data_get = res;
+                    for (var i = 0; i < data_get.length; i++) {
+                        dataChartProductOrdered.push(data_get[i].value);
+                        labelChartProductOrdered.push(data_get[i].label);
+                    }
+                    if ($("#myChartProduct").length) {
+                        var barChartCanvasProduct = $("#myChartProduct").get(0).getContext("2d");
+                        // This will get the first returned node in the jQuery collection.
+                        var barChart = new Chart(barChartCanvasProduct, {
+                            type: 'bar',
+                            data: dataProduct,
+                            options: doughnutPieOptionsProduct
+                        });
+                    }
+                }
+            })
+        }
+
+        let dataProduct = {
+            labels: labelChartProductOrdered,
+            datasets: [{
+                label: 'Số lượng sản phẩm',
+                data: dataChartProductOrdered,
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)',
+                    'rgb(255, 205, 86)',
+                    'rgb(201, 203, 207)',
+                    'rgb(54, 162, 235)'
+                ],
+            }],
+        };
+
+        let doughnutPieOptionsProduct = {
+            responsive: true,
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+    </script>
+    <script>
+        let chart = new Morris.Bar({
+            element: 'chart',
+            barColors: ["#EC407A", "#2196F3", "#8BC34A", "#AB47BC"],
+            parseTime: false,
+            hideHover: 'auto',
+            xkey: 'createdAt',
+            ykeys: ['sales', 'profit', 'quantity'],
+            labels: ['Doanh số', 'Lợi nhuận', 'Số lượng']
+        });
+
+        function char30day() {
+            $.ajax({
+                url: '/api/admin/statistics',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    chart.setData(data);
+                }
+            })
+        }
+
+        $('#btn-dashboard-filter').click(function () {
+            let toDate = $('#datepicker').val();
+            let fromDate = $('#datepicker2').val();
+            req = {
+                toDate: toDate,
+                fromDate: fromDate
+            }
+            let myJson = JSON.stringify(req)
+            $.ajax({
+                url: '/api/admin/statistics',
+                type: 'POST',
+                data: myJson,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if(data == null){
+                        console.log("ahihi!");
+                    }
+                    chart.setData(data);
+                }
+            })
+        });
+
+        function init() {
+            char30day();
+            getCountCategory();
+            getCountProduct();
+            getCountOrder();
+            getCountPost();
+            getCountBrands();
+            getCountUsers();
+        }
+
+        function getCountUsers() {
+            $.ajax({
+                url: '/api/admin/count/users',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#countUser').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        function getCountCategory() {
+            $.ajax({
+                url: '/api/admin/count/categories',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#category-count').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        function getCountProduct() {
+            $.ajax({
+                url: '/api/admin/count/products',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#product-count').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        function getCountOrder() {
+            $.ajax({
+                url: '/api/admin/count/orders',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#order-count').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        function getCountPost() {
+            $.ajax({
+                url: '/api/admin/count/posts',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#post-count').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        function getCountBrands() {
+            $.ajax({
+                url: '/api/admin/count/brands',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#brands-count').append(`
+                        <strong>${data}</strong>
+                    `)
+                }
+            })
+        }
+
+        init();
+    </script>
+</th:block>
+
+</body>
+</html>

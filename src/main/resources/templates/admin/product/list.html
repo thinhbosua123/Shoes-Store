@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <!--        <h2>Editable Tables</h2>-->
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><span>Danh sách sản phẩm</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <section class="card">
+        <header class="card-header">
+            <div class="card-actions">
+                <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+            </div>
+            <h2 class="card-title">Danh sách sản phẩm</h2>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <a href="/admin/products/create" id="addToTable" class="btn btn-info">Thêm mới sản phẩm <i
+                                class="fas fa-plus"></i></a>
+                        <a href="/admin/products" class="btn btn-primary">Refresh <i
+                                class="fas fa-redo-alt"></i></a>
+                        <button id="btn-search" class="btn btn-success">Tìm kiếm <i
+                                class="fas fa-search"></i></button>
+                        <button class="btn btn-warning btn_export"><a th:href="@{/api/products/export/excel}">Xuất dữ liệu</a>
+                            <i class="fas fa-file-export"></i></button>
+<!--                        <button id="btn-delete" onclick="warningBeforeDelete()" type="button" class="btn btn-danger" disabled>Xóa sản phẩm  <i-->
+<!--                                class="fas fa-trash-alt"></i></button>-->
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped mb-0" id="datatable-editable">
+                <thead>
+                <tr>
+<!--                    <th><input type="checkbox" id="checkAll"></th>-->
+                    <th width="8%">Mã sản phẩm</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Ảnh</th>
+                    <th>Nhãn hiệu</th>
+                    <th>Danh mục</th>
+                    <th>Giá nhập</th>
+                    <th>Giá bán</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày sửa</th>
+                    <th>Đã bán</th>
+                    <th>Thao tác</th>
+                </tr>
+                <tr>
+                    <form method="GET" id="search-form">
+<!--                        <th></th>-->
+                        <th>
+                            <input type="text" name="id" id="id" class="form-control search-input">
+                        </th>
+                        <th>
+                            <input type="text" name="name" id="name" class="form-control search-input">
+                        </th>
+                        <th></th>
+                        <th>
+                            <select name="brand" class="form-control search-select" id="brand">
+                                <option value="">Tất cả</option>
+                                <th:block th:each="brand : ${brands}">
+                                    <option th:value="${brand.id}" th:text="${brand.name}"></option>
+                                </th:block>
+                            </select>
+                        </th>
+                        <th>
+                            <select name="category" class="form-control search-select" id="category">
+                                <option value="">Tất cả</option>
+                                <th:block th:each="category : ${categories}">
+                                    <option th:value="${category.id}" th:text="${category.name}"></option>
+                                </th:block>
+                            </select>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <input type="hidden" name="page" id="page">
+                    </form>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="product : ${products}">
+                    <tr data-item-id="1">
+<!--                        <td><input type="checkbox" id="checkbox_${product.id}" class="myCheckbox" th:value="${product.id}"></td>-->
+                        <td th:text="${product.id}"></td>
+                        <td th:text="${product.name}"></td>
+                        <td><img th:src="@{${product.images[0]}}" width="60px" height="60px"></td>
+                        <td th:text="${product.brand.name}"></td>
+                        <td>
+                            <th:block th:each="category,i : ${product.categories}">
+                                <span th:if="${i.first} == true" th:text="${category.name}"></span>
+                                <span th:if="${i.first} == false" th:text="', ' + ${category.name}"></span>
+                            </th:block>
+                        </td>
+                        <td class="money" th:text="${product.price}"></td>
+                        <td class="money" th:text="${product.salePrice}"></td>
+                        <td th:text="${#dates.format(product.createdAt, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${#dates.format(product.modifiedAt, 'dd-MM-yyyy')}"></td>
+                        <td th:text="${product.totalSold}"></td>
+                        <td class="actions">
+                            <a th:href="@{/admin/products/{slug}/{id}(id=${product.id}, slug=${product.slug})}" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>
+                            <a href="#" th:data-id="${product.id}" class="on-default remove-row delete-product"><i class="far fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <br>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
+        </div>
+    </section>
+
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/table.js}"></script>
+    <script th:inline="javascript">
+        let id, name, category, brand, page;
+        $(function () {
+            $("#checkAll").click(function () {
+                $('input:checkbox').not(this).prop('checked', this.checked);
+            });
+            $('.myCheckbox').click(function () {
+                $('#btn-delete').prop("disabled", !$(".myCheckbox").prop("checked"));
+            })
+            $('#checkAll').click(function () {
+                $('#btn-delete').prop("disabled", !$("#checkAll").prop("checked"));
+            })
+            $('.money').simpleMoneyFormat();
+            let vars = parseUrl();
+            id = vars["id"] || ""
+            name = vars["name"] || ""
+            brand = vars["brand"] || ""
+            category = vars["category"] || ""
+            page = vars["page"] || "1"
+            $('#page').val(page)
+            $('#id').val(id)
+            $('#name').val(name)
+            $('#brand').val(brand)
+            $('#category').val(category)
+
+            pagination([[${totalPages}]], [[${currentPage}]]);
+        });
+        function warningBeforeDelete(){
+            swal({
+                title: "Xác nhận xóa",
+                text: "Bạn có chắc chắn muốn xóa hay không",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-success",
+                cancelButtonClass: "btn-danger",
+                confirmButtonText: "Xác nhận",
+                cancelButtonText: "Hủy bỏ",
+            }).then(function(isConfirm) {
+                if (isConfirm.value) {
+                    var ids = $('tbody input[type=checkbox]:checked').map(function () {
+                        return $(this).val();
+                    }).get();
+                    deleteNew(ids);
+                }
+            });
+        }
+
+        function deleteNew(data) {
+            $.ajax({
+                url: '/api/admin/products',
+                type: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data){
+                    toastr.success("Xóa sản phẩm thành công!");
+                    setTimeout(() => location.reload(), 500);
+                },
+                error: function (error){
+                    toastr.warning(error.responseJSON.message);
+                }
+            });
+        }
+
+        $(".delete-product").on("click",function (){
+            let id = $(this).data('id');
+            swal({
+                title: 'Bạn chắc chắn muốn xóa!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                cancelButtonText: "Không",
+                confirmButtonText: "Có",
+            }).then(function (rs){
+                if (rs.value){
+                    $.ajax({
+                        url:"/api/admin/products/"+ id,
+                        type: "DELETE",
+                        success: function (data){
+                            toastr.success("Xóa danh mục thành công!");
+                            setTimeout(() => location.reload(), 500);
+                        },
+                        error: function (error){
+                            toastr.warning(error.responseJSON.message);
+                        }
+                    })
+                }
+            })
+        })
+
+        $(".btn_export").on("click",function (){
+            $.ajax({
+                url: '/api/products/export/excel',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data){
+                    toastr.success("Xuất dữ liệu thành công!");
+                    setTimeout(() => location.reload(), 500);
+                },
+                error: function (error){
+                    toastr.warning("Xuất dữ liệu thất bại!");
+                }
+            });
+        })
+    </script>
+</th:block>
+</body>
+</html>

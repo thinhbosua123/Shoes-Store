@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.name}"></title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+        <style>
+            .rating {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                overflow: hidden;
+                flex-direction: row-reverse;
+                height: 40px;
+                position: relative;
+            }
+
+            .rating-0 {
+                filter: grayscale(100%);
+            }
+
+            .rating > input {
+                display: none;
+            }
+
+            .rating > label {
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                margin-top: auto;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23e3e3e3' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: 76%;
+                transition: .3s;
+            }
+
+            .rating > input:checked ~ label,
+            .rating > input:checked ~ label ~ label {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23fcd93a' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+            }
+
+            .rating > input:not(:checked) ~ label:hover,
+            .rating > input:not(:checked) ~ label:hover ~ label {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='126.729' height='126.73'%3e%3cpath fill='%23d8b11e' d='M121.215 44.212l-34.899-3.3c-2.2-.2-4.101-1.6-5-3.7l-12.5-30.3c-2-5-9.101-5-11.101 0l-12.4 30.3c-.8 2.1-2.8 3.5-5 3.7l-34.9 3.3c-5.2.5-7.3 7-3.4 10.5l26.3 23.1c1.7 1.5 2.4 3.7 1.9 5.9l-7.9 32.399c-1.2 5.101 4.3 9.3 8.9 6.601l29.1-17.101c1.9-1.1 4.2-1.1 6.1 0l29.101 17.101c4.6 2.699 10.1-1.4 8.899-6.601l-7.8-32.399c-.5-2.2.2-4.4 1.9-5.9l26.3-23.1c3.8-3.5 1.6-10-3.6-10.5z'/%3e%3c/svg%3e");
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<main class="main" id="main-content">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item" th:text="${product.name}"></li>
+            </ol>
+        </nav>
+        <div class="product-single-container product-single-default">
+            <div class="row">
+                <div class="col-md-6 product-single-gallery">
+                    <div class="product-slider-container">
+                        <div class="product-single-carousel owl-carousel owl-theme">
+                            <th:block th:each="img :${product.productImages}">
+                                <div class="product-item">
+                                    <img class="product-single-image" th:src="${img}" th:attr="data-zoom-image=${img}"/>
+                                </div>
+                            </th:block>
+                        </div>
+                        <!-- End .product-single-carousel -->
+                        <span class="prod-full-screen"><i class="icon-plus"></i></span>
+                    </div>
+                    <div class="prod-thumbnail owl-dots" id='carousel-custom-dots'>
+                        <th:block th:each="img :${product.productImages}">
+                            <div class="owl-dot">
+                                <img th:src="@{${img}}"/>
+                            </div>
+                        </th:block>
+                    </div>
+                </div><!-- End .product-single-gallery -->
+
+                <div class="col-md-6 product-single-details">
+                    <h1 class="product-title" th:text="${product.name}"></h1>
+
+                    <hr class="short-divider">
+
+                    <div>
+                        <span class="desc-sub-title">Giá sản phẩm: </span>
+                        <th:block th:if="${product.promotionPrice}">
+                            <span class="product-price price-box text-price" th:text="${product.promotionPrice}"> </span> &#x20AB;
+                            <del class="old-price text-price " th:text="${product.price}"></del> &#x20AB;
+                        </th:block>
+                        <th:block th:unless="${product.promotionPrice}">
+                            <span class="product-price price-box text-price" th:text="${product.price}"></span> &#x20AB;
+                        </th:block>
+                    </div><!-- End .price-box -->
+                    <hr class="divider">
+                    <div class="product-desc">
+                        <span class="desc-sub-title">Đã bán: </span>
+                        <span th:text="${product.totalSold} + ' đôi'"></span>
+                    </div>
+                    <hr class="divider">
+                    <div class="product-desc">
+                        <span class="desc-sub-title">Tình trạng: </span>
+                        <span th:if="${canBuy}">Còn hàng</span>
+                        <span th:unless="${canBuy}" style="color:#f04e40">Tạm hết hàng</span>
+                    </div>
+                    <hr class="divider">
+
+                    <div class="btns">
+                        <div class="size-btn" data-toggle="modal" data-target="#modal-size-Choose">
+                            <button class="btn btn-primary size trans-btn">
+                                <span class="size-text">Size</span>
+                                <span class="size-details"></span>
+                                <i class="fas dropdown-arrow"></i>
+                            </button>
+                        </div>
+                        <div class="buy-btn">
+                            <button class="btn btn-primary buy red-btn" th:classappend="${canBuy} == true ? '' : 'not-buy'">
+                                <div class="ask-text left-content">
+                                    <th:block th:if="${product.promotionPrice}">
+                                        <div class="ask-desc sub-content old-price"><span class="text-price" th:text="${product.price}"></span> &#x20AB;</div>
+                                        <div class="ask-price "><span class="text-price" th:text="${product.promotionPrice}"></span> &#x20AB;</div>
+                                    </th:block>
+                                    <th:block th:unless="${product.promotionPrice}">
+                                        <div class="ask-desc sub-content">Giá bán ưu đãi</div>
+                                        <div class="ask-price "><span class="text-price" th:text="${product.price}"></span> &#x20AB;</div>
+                                    </th:block>
+                                </div>
+                                <div class="buy-text right-content">
+                                    <div class="buy-now ">Mua ngay</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <hr class="divider mb-1">
+
+                    <div class="product-single-share">
+<!--                        <label class="sr-only">Share:</label>-->
+
+<!--                        <div class="social-icons mr-2">-->
+<!--                            <a href="#" class="social-icon social-facebook icon-facebook" target="_blank" title="Facebook"></a>-->
+<!--                            <a href="#" class="social-icon social-twitter icon-twitter" target="_blank" title="Twitter"></a>-->
+<!--                            <a href="#" class="social-icon social-linkedin fab fa-linkedin-in" target="_blank" title="Linkedin"></a>-->
+<!--                            <a href="#" class="social-icon social-gplus fab fa-google-plus-g" target="_blank" title="Google +"></a>-->
+<!--                            <a href="#" class="social-icon social-mail icon-mail-alt" target="_blank" title="Mail"></a>-->
+<!--                        </div>&lt;!&ndash; End .social-icons &ndash;&gt;-->
+
+<!--                        <a href="#" class="add-wishlist" title="Add to Wishlist">Add to Wishlist</a>-->
+                    </div><!-- End .product single-share -->
+                </div><!-- End .product-single-details -->
+            </div><!-- End .row -->
+        </div><!-- End .product-single-container -->
+
+        <div class="product-single-tabs">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="product-tab-desc" data-toggle="tab" href="#product-desc-content" role="tab" aria-controls="product-desc-content" aria-selected="true">Mô tả chi tiết sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="product-tab-more-info" data-toggle="tab" href="#product-more-info-content" role="tab" aria-controls="product-more-info-content" aria-selected="false">Hình ảnh feedback</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="product-tab-reviews" data-toggle="tab" href="#product-reviews-content" role="tab" aria-controls="product-reviews-content" aria-selected="false">Đánh giá sản phẩm</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="product-desc-content" role="tabpanel" aria-labelledby="product-tab-desc">
+                    <div class="product-desc-content">
+                        <p th:utext="${product.description}"></p>
+                    </div><!-- End .product-desc-content -->
+                </div><!-- End .tab-pane -->
+
+                <div class="tab-pane fade fade" id="product-more-info-content" role="tabpanel" aria-labelledby="product-tab-more-info">
+                    <div class="products-slider owl-carousel owl-theme dots-top">
+                        <th:block th:each="img :${product.feedbackImages}">
+                            <div class="product-default inner-quickview inner-icon">
+                                <figure>
+                                   <img th:src="@{${img}}">
+                                </figure>
+                            </div>
+                        </th:block>
+                    </div><!-- End .products-slider -->
+                </div><!-- End .tab-pane -->
+
+
+                <div class="tab-pane fade" id="product-reviews-content" role="tabpanel" aria-labelledby="product-tab-reviews">
+                    <div class="product-reviews-content">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <ol class="comment-list">
+                                    <th:block th:each="comment : ${product.comments}">
+                                        <li class="comment-container">
+                                            <div class="comment-avatar">
+                                                <img th:src="@{/shop/images/avatar/avatar.png}" width="65" height="65" alt="avatar"/>
+                                            </div><!-- End .comment-avatar-->
+                                            <div class="comment-box">
+<!--                                                <div class="ratings-container">-->
+<!--                                                    <div class="product-ratings">-->
+<!--                                                        <span class="ratings" style="width:80%"></span>&lt;!&ndash; End .ratings &ndash;&gt;-->
+<!--                                                    </div>&lt;!&ndash; End .product-ratings &ndash;&gt;-->
+<!--                                                </div>&lt;!&ndash; End .ratings-container &ndash;&gt;-->
+
+                                                <div class="comment-info mb-1">
+                                                    <h4 class="avatar-name" th:text="${comment.user.fullName}"></h4> - <span class="comment-date" th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy')}">Novemeber 15, 2019</span>
+                                                </div><!-- End .comment-info -->
+
+                                                <div class="comment-text">
+                                                    <p th:text="${comment.content}"></p>
+                                                </div><!-- End .comment-text -->
+                                            </div><!-- End .comment-box -->
+                                        </li><!-- comment-container -->
+                                    </th:block>
+                                </ol><!-- End .comment-list -->
+                            </div>
+
+                            <div class="col-xl-6">
+                                <div class="add-product-review">
+                                    <form action="#" class="comment-form m-0" id="formCommentProduct">
+<!--                                        <div class="rating-form">-->
+<!--                                            <label for="rating">Đánh giá chất lượng sản phẩm</label>-->
+<!--                                            <div class="rating btn-rating">-->
+<!--                                                <input type="radio" name="rating" value="5" id="rating-5">-->
+<!--                                                <label for="rating-5"></label>-->
+
+<!--                                                <input type="radio" name="rating" value="4" id="rating-4">-->
+<!--                                                <label for="rating-4"></label>-->
+
+<!--                                                <input type="radio" name="rating" value="3" id="rating-3">-->
+<!--                                                <label for="rating-3"></label>-->
+
+<!--                                                <input type="radio" name="rating" value="2" id="rating-2">-->
+<!--                                                <label for="rating-2"></label>-->
+
+<!--                                                <input type="radio" name="rating" value="1" id="rating-1">-->
+<!--                                                <label for="rating-1"></label>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                        <div class="form-group">
+                                            <label>Viết bình luận </label>
+                                            <textarea cols="6" rows="6" name="product_comment" class="form-control form-control-sm product_comment"></textarea>
+                                        </div><!-- End .form-group -->
+                                        <button type="submit" class="btn btn-dark ls-n-15">Gửi bình luận</button>
+                                    </form>
+                                </div><!-- End .add-product-review -->
+                            </div>
+                        </div>
+                    </div><!-- End .product-reviews-content -->
+                </div><!-- End .tab-pane -->
+            </div><!-- End .tab-content -->
+        </div><!-- End .product-single-tabs -->
+
+        <div class="products-section pt-0">
+            <h2 class="section-title">Sản phẩm liên quan</h2>
+
+            <div class="products-slider owl-carousel owl-theme dots-top">
+                <th:block th:each="related : ${relatedProducts}">
+                    <div class="product-default inner-quickview inner-icon">
+                        <figure>
+                            <a th:href="@{/{slug}/{id}(id=${related.id},slug=${related.slug})}">
+                                <img th:src="@{${related.images}}">
+                            </a>
+                        </figure>
+                        <div class="product-details">
+                            <h3 class="product-title">
+                                <a th:href="@{/{slug}/{id}(id=${related.id},slug=${related.slug})}" th:text="${related.name}"></a>
+                            </h3>
+                            <div class="price-box">
+                                <th:block th:if="${related.promotionPrice}">
+                                    <span class="product-price" th:text="${#numbers.formatDecimal(related.promotionPrice, 0, 'COMMA', 0, 'POINT') +' đ'}"></span>
+                                    <del class="old-price" th:text="${#numbers.formatDecimal(related.price, 0, 'COMMA', 0, 'POINT') +' đ'}"></del>
+                                </th:block>
+                                <th:block th:unless="${related.promotionPrice}">
+                                    <span class="product-price" th:text="${#numbers.formatDecimal(related.price, 0, 'COMMA', 0, 'POINT') +' đ'}"></span>
+                                </th:block>
+                            </div><!-- End .price-box -->
+                            <div class="ratings-container">
+                                <p class="card-text sold">&Dstrok;&atilde; b&aacute;n <span th:text="${related.totalSold}"></span> &dstrok;&ocirc;i</p>
+                            </div><!-- End .product-container -->
+                        </div><!-- End .product-details -->
+                    </div>
+                </th:block>
+            </div><!-- End .products-slider -->
+        </div><!-- End .products-section -->
+    </div><!-- End .container -->
+
+    <!-- Modals-->
+    <th:block th:replace="~{fragment/size_choose_modal :: size-choose-modal}"></th:block>
+</main><!-- End .main -->
+
+<th:block id="js-resources">
+    <script th:src="@{/shop/js/size-choose.js}"></script>
+    <script th:src="@{/shop/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/shop/js/plugins.min.js}"></script>
+
+    <script th:inline="javascript">
+        let sizeVn = [[${sizeVn}]];
+
+        let sizeUs = [[${sizeUs}]];
+
+        let sizeCm = [[${sizeCm}]];
+
+        $(function () {
+            formatMoney();
+            render();
+            activeSize();
+            sizeGuideRender();
+        });
+
+        function render() {
+            for (let i = 0; i < sizeVn.length; i++) {
+                let sizeChoose = `
+            <div class="item" data-size="${sizeUs[i]}US | ${sizeVn[i]}VN | ${sizeCm[i]}CM" data-id="${sizeVn[i]}">
+                ${sizeVn[i]}
+            </div>
+            `;
+
+                $('.size .select-filter').append(sizeChoose);
+            };
+        };
+
+        function sizeGuideRender() {
+            let tr = '';
+            for (let i = 0; i < sizeVn.length; i++) {
+                tr += `
+            <tr>
+              <td>${sizeVn[i]}</td>
+              <td>${sizeUs[i]}</td>
+              <td>${sizeCm[i]}</td>
+            </tr>
+            `;
+            }
+            $('.side-guide-table tbody').html(tr);
+        }
+
+        function activeSize() {
+            let availableSizes = [[${availableSizes}]]
+
+            for (let i = 0; i < sizeVn.length; i++) {
+                if (sizeVn[i] == availableSizes[0]) {
+                    $('.size-details').text(sizeUs[i] + "US | " + sizeVn[i] + "VN | " + sizeCm[i] + "CM")
+                    break;
+                }
+            }
+
+            $('.size .item').addClass('cross')
+            $(`.item[data-size='${$('.size-details').text()}']`).addClass('size-choose').removeClass('cross');
+
+            for (let i = 0; i < availableSizes.length; i++) {
+                $(`.item[data-id='${availableSizes[i]}']`).removeClass('cross');
+            }
+        }
+
+        $('.buy-now').click(function() {
+            if (isLogined == true) {
+                let size = $('.size-choose').data("id");
+                if (size == null || size == "") {
+                    toastr.warning("Sản phẩm tạm hết hàng. Vui lòng đặt hàng sau.");
+                } else {
+                    location.href = "/dat-hang?id="+[[${product.id}]]+"&size="+size;
+                }
+            } else {
+                toastr.warning("Vui lòng đăng nhập để đặt hàng");
+                setTimeout(function() {
+                    $('#exampleModal').modal('show');
+                }, 500);
+            }
+        })
+
+        $("#formCommentProduct").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
+                product_comment: {
+                    required: true,
+                    maxlength: 300
+                }
+            },
+            messages: {
+                product_comment: {
+                    required: "Vui lòng nhập nội dung bình luận!",
+                    maxlength: "Nội dung bình luận có độ dài tối đa 300 ký tự!",
+                }
+            },
+
+            submitHandler: function () {
+                let content = $(".product_comment").val();
+                let productId = [[${product.id}]];
+                req = {
+                    content: content,
+                    productId: productId
+                }
+                let myJson = JSON.stringify(req)
+                $.ajax({
+                    url: "/api/comments/product",
+                    type: 'POST',
+                    data: myJson,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $(".comment-list").append(`
+                                <li class="comment-container">
+                                            <div class="comment-avatar">
+                                                <img src="/shop/images/avatar/avatar.png" width="65" height="65" alt="avatar"/>
+                                            </div>
+                                            <div class="comment-box">
+                                                <div class="comment-text">
+                                                    <p>${data.content}</p>
+                                                </div>
+                                            </div>
+                                        </li>`)
+                        $(".product_comment").val('');
+                    },
+                    error: function (error) {
+                        toastr.warning("Vui lòng đăng nhập để bình luận");
+                        setTimeout(function () {
+                            $('#exampleModal').modal('show');
+                        }, 500);
+                    }
+                });
+            }
+        });
+
+        // $(".btn-rating").click(function (){
+        //     let rating = $("#rating").val()
+        //     console.log(rating)
+        // })
+        // $('.btn-rating input').on('change', function() {
+        //     alert($('input[name=rating]:checked').val());
+        // });
+    </script>
+</th:block>
+</body>
+</html>

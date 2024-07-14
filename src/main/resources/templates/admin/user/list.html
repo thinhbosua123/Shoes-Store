@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách tài khoản</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="/admin">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><span>Danh sách tài khoản</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <section class="card">
+        <header class="card-header">
+            <div class="card-actions">
+                <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+            </div>
+            <h2 class="card-title">Danh sách tài khoản </h2>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <button id="addToTable" class="btn btn-primary">Thêm mới tài khoản <i
+                                class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped mb-0" id="datatable-editable">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Ngày tạo</th>
+<!--                    <th>Thao tác</th>-->
+                </tr>
+                <tr>
+                    <form method="GET" id="search-form">
+                        <th></th>
+                        <th><input type="text" name="fullName" id="fullName" class="form-control search-input"></th>
+                        <th><input type="text" name="email" id="email" class="form-control search-input"></th>
+                        <th><input type="text" name="phone" id="phone" class="form-control search-input"></th>
+                        <th></th>
+                        <th></th>
+<!--                        <th></th>-->
+                        <input type="hidden" name="page" id="page">
+                    </form>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="user : ${users}">
+                    <tr data-item-id="1">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.fullName}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.address}"></td>
+                    <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
+<!--                    <td class="actions">-->
+<!--                        <a href="#" class="hidden on-editing save-row"><i class="fas fa-save"></i></a>-->
+<!--                        <a href="#" class="hidden on-editing cancel-row"><i-->
+<!--                                class="fas fa-times"></i></a>-->
+<!--                        <a href="#" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>-->
+<!--                        <a href="#" class="on-default remove-row"><i class="far fa-trash-alt"></i></a>-->
+<!--                    </td>-->
+                </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <br>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
+        </div>
+    </section>
+
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/table.js}"></script>
+    <script th:inline="javascript">
+        let fullName, email, phone, address, page;
+
+        $(function () {
+            let vars = parseUrl();
+            fullName = vars["fullName"] || ""
+            email = vars["email"] || ""
+            phone = vars["phone"] || ""
+            address = vars["address"] || ""
+            page = vars["page"] || "1"
+
+            $('#fullName').val(fullName)
+            $('#email').val(email)
+            $('#phone').val(phone)
+            $('#address').val(address)
+            $('#page').val(page)
+
+            pagination([[${totalPages}]], [[${currentPage}]]);
+        });
+    </script>
+</th:block>
+</body>
+</html>

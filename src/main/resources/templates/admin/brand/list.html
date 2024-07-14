@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                'header',
+                                                'sidebar',
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách nhãn hiệu</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+        <link rel="stylesheet" th:href="@{/adminlte/css/custom.css}">
+    </th:block>
+</head>
+<body>
+<section role="main" class="content-body" id="main-content">
+    <header class="page-header">
+        <!--        <h2>Editable Tables</h2>-->
+        <div class="right-wrapper text-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="bx bx-home-alt"></i>
+                    </a>
+                </li>
+                <li><span>Tables</span></li>
+                <li><span>Editable</span></li>
+            </ol>
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i
+                    class="fas fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <section class="card">
+        <header class="card-header">
+            <div class="card-actions">
+                <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+            </div>
+            <h2 class="card-title">Danh sách nhãn hiệu </h2>
+        </header>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                        <button id="addToTable" class="btn btn-primary" data-toggle="modal"
+                                data-target="#modal-add-new-brand">Thêm mới nhãn hiệu <i
+                                class="fas fa-plus"></i></button>
+                        <a href="/admin/brands" class="btn btn-primary">Refresh <i
+                                class="fas fa-redo-alt"></i></a>
+                        <button id="btn-search" class="btn btn-primary">Tìm kiếm <i
+                                class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped mb-0" id="datatable-editable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên nhãn hiệu</th>
+                    <th>Ảnh nhãn hiệu</th>
+                    <th>Trạng thái nhãn hiệu</th>
+                    <!--                    <th>Thứ tự nhãn hiệu</th>-->
+                    <th>Ngày tạo danh mục</th>
+                    <th>Ngày sửa danh mục</th>
+                    <th>Thao tác</th>
+                </tr>
+                <tr>
+                    <form method="GET" id="search-form">
+                        <th>
+                            <input type="text" name="id" id="id" class="form-control search-input">
+                        </th>
+                        <th>
+                            <input type="text" name="name" id="name" class="form-control search-input">
+                        </th>
+                        <th></th>
+                        <th>
+                            <select name="status" class="form-control search-select" id="status">
+                                <option value="">Tất cả</option>
+                                <option value="0">Ẩn</option>
+                                <option value="1">Hiển thị</option>
+                            </select>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <input type="hidden" name="page" id="page">
+                    </form>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="brand : ${brands}">
+                    <tr data-item-id="1" th:data-id="${brand.id}">
+                        <td th:text="${brand.id}"></td>
+                        <td class="brand-name" th:data-id="${brand.id}" th:text="${brand.name}"></td>
+                        <td>
+                            <div class="logo-div">
+                                <img th:src="${brand.thumbnail}" th:alt="${brand.name}" class="brand-thumbnail"
+                                     th:data-id="${brand.id}"/>
+                            </div>
+                        </td>
+                        <th:block th:if="${brand.status} == true">
+                            <td><label class="switch" style="margin-left: 60px;">
+                                <input type="checkbox" checked disabled th:data-id="${brand.id}" class="brand-status">
+                                <span class="slider round"></span>
+                            </label></td>
+                        </th:block>
+                        <th:block th:if="${brand.status} == false">
+                            <td><label class="switch" style="margin-left: 60px;">
+                                <input type="checkbox" disabled th:data-id="${brand.id}" class="brand-status">
+                                <span class="slider round"></span>
+                            </label></td>
+                        </th:block>
+                        <td th:text="${#dates.format(brand.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${#dates.format(brand.modifiedAt, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td class="actions">
+                            <a href="#" class="edit-brand" th:data-id="${brand.id}"><i
+                                    class="fas fa-pencil-alt"></i></a>
+                            <a href="#" class=" delete-brand" th:data-id="${brand.id}"><i class="far fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+            <br>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination"></ul>
+            </nav>
+        </div>
+
+
+    </section>
+
+    <!-- Modal add new brand-->
+    <div class="modal fade" id="modal-add-new-brand" tabindex="-1" role="dialog" aria-labelledby="modalAddNewBrand"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm nhãn hiệu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="required-label" for="new-brand">Tên nhãn hiệu</label>
+                        <input type="text" class="form-control" id="new-brand">
+                        <span class="invalid-feedback" id="invalid-feedback-new-brand">Độ dài tên nhãn hiệu từ 1 - 50 ký tự</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label">Logo</label>
+                        <div class="thumbnail-container" style="display:none">
+                            <div class="img-div">
+                                <img class="preview-img" alt="Thumbnail post">
+                            </div>
+                        </div>
+                        <div class="invalid-feedback invalid-feedback-thumbnail">Bạn chưa chọn logo</div>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#choose-img-modal">
+                            Chọn ảnh
+                        </button>
+                    </div>
+                    <br>
+                    <label>Trạng thái</label>
+                    <br>
+                    <label class="switch">
+                        <input type="checkbox" id="new_status">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary btn-add-new-brand">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal update brand-->
+    <div class="modal fade" id="modal-update-brand" tabindex="-1" role="dialog" aria-labelledby="modalUpdateBrand"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa nhãn hiệu</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" hidden id="update-brand-id">
+                    <div class="form-group">
+                        <label class="required-label" for="update-brand">Tên nhãn hiệu</label>
+                        <input type="text" class="form-control" id="update-brand">
+                        <span class="invalid-feedback" id="invalid-feedback-update-brand">Độ dài tên nhãn hiệu từ 1 - 50 ký tự</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="required-label">Logo</label>
+                        <div class="thumbnail-container" style="display:none">
+                            <div class="img-div">
+                                <img class="preview-img" alt="Thumbnail post">
+                            </div>
+                        </div>
+                        <div class="invalid-feedback invalid-feedback-thumbnail">Bạn chưa chọn logo</div>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#choose-img-modal">
+                            Chọn ảnh
+                        </button>
+                    </div>
+                    <br>
+                    <label>Trạng thái</label>
+                    <br>
+                    <label class="switch">
+                        <input type="checkbox" id="update_status">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary btn-update-brand">Sửa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragment/choose_image_modal :: choose-img-modal}"></th:block>
+</section>
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/table.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/list.min.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/modal_image.js}"></script>
+
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <script th:inline="javascript">
+        let id, name, status, page;
+        $(function () {
+            let vars = parseUrl();
+            id = vars["id"] || ""
+            name = vars["name"] || ""
+            status = vars["status"] || ""
+            page = vars["page"] || "0"
+
+            $('#id').val(id)
+            $('#name').val(name)
+            $('#status').val(status)
+            $('#page').val(page)
+
+            pagination([[${totalPages}]], [[${currentPage}]])
+        });
+
+        $(function () {
+            let imgs = [[${images}]];
+            let tmp = [];
+            for (img of imgs) {
+                tmp.push({"grid-item-img": img})
+            }
+            initListImg(tmp);
+        })
+
+        $('.btn-choose-img').click(function () {
+            let url = $('#list-user-img .grid-item.choosen .grid-item-img').attr('src');
+            if (url == "" || url == null) {
+                toastr.warning("Bạn chưa chọn ảnh");
+                return;
+            }
+            closeChooseImgModal();
+            $('.thumbnail-container').show();
+            $('.invalid-feedback-thumbnail').hide();
+            $('.preview-img').attr('src', url);
+        })
+
+        $("#modal-add-new-brand").on("hidden.bs.modal", function () {
+            closeModalInsertUpdate();
+        });
+
+        $("#modal-update-brand").on("hidden.bs.modal", function () {
+            closeModalInsertUpdate();
+        });
+
+        function closeModalInsertUpdate() {
+            $('.thumbnail-container').hide();
+            $('#new-brand').val('');
+            $('#update-brand').val('');
+            $('#update-brand-id').val('');
+            $('.preview-img').attr('src', '');
+            $('.invalid-feedback').hide();
+        }
+
+        $('.btn-add-new-brand').click(function () {
+            let newBrand = $('#new-brand').val();
+            let thumbnail = $('.preview-img').attr('src');
+            let status = false;
+            if ($("#new_status").is(":checked")) {
+                status = true;
+            }
+            isValid = true;
+
+            if (newBrand.length === 0) {
+                $('#invalid-feedback-new-brand').show();
+                isValid = false;
+            }
+            if (typeof thumbnail == 'undefined' || thumbnail == '') {
+                $('.invalid-feedback-thumbnail').show();
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    name: newBrand,
+                    thumbnail: thumbnail,
+                    status: status
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/admin/brands',
+                    type: 'POST',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        toastr.success("Tạo nhãn hiệu thành công");
+                        $('.modal').modal('hide');
+                        setTimeout(() => location.reload(), 500);
+                    },
+                    error: function (data) {
+                        toastr.warning(data.responseJSON.message);
+                    }
+                });
+            }
+        });
+
+        let brandId;
+        $('.edit-brand').click(function () {
+            brandId = $(this).data('id');
+            $.ajax({
+                url: "/api/admin/brands/" + brandId,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $('.thumbnail-container').show();
+                    $("#update-brand").val(data.name);
+                    $('.preview-img').attr('src',data.thumbnail);
+                    if (data.status == 1) {
+                        $("#update_status").prop('checked', true)
+                    } else {
+                        $("#update_status").prop('checked', false)
+                    }
+                    $('#modal-update-brand').modal('show');
+                }
+            })
+        });
+
+        $(".btn-update-brand").click(function (){
+            let updateBrand = $('#update-brand').val();
+            let thumbnail = $('.preview-img').attr('src');
+            let status = false;
+            if ($("#update_status").is(":checked")) {
+                status = true;
+            }
+            isValid = true;
+
+            if (updateBrand.length === 0) {
+                $('#invalid-feedback-new-brand').show();
+                isValid = false;
+            }
+            if (typeof thumbnail == 'undefined' || thumbnail == '') {
+                $('.invalid-feedback-thumbnail').show();
+                isValid = false;
+            }
+
+            if (isValid) {
+                req = {
+                    id:brandId,
+                    name: updateBrand,
+                    thumbnail: thumbnail,
+                    status: status
+                }
+                var myJSON = JSON.stringify(req);
+                $.ajax({
+                    url: '/api/admin/brands/'+brandId,
+                    type: 'PUT',
+                    data: myJSON,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        toastr.success("Sửa nhãn hiệu thành công");
+                        $('.modal').modal('hide');
+                        setTimeout(() => location.reload(), 500);
+                    },
+                    error: function (data) {
+                        toastr.warning(data.responseJSON.message);
+                    }
+                });
+            }
+        })
+
+        $(".delete-brand").on("click",function (){
+           let id = $(this).data('id');
+            swal({
+                title: 'Bạn chắc chắn muốn xóa!',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                cancelButtonText: "Không",
+                confirmButtonText: "Có",
+            }).then(function (rs){
+                if (rs.value){
+                    $.ajax({
+                        url:"/api/admin/brands/"+ id,
+                        type: "DELETE",
+                        success: function (data){
+                            toastr.success("Xóa danh mục thành công!");
+                            setTimeout(() => location.reload(), 500);
+                        },
+                        error: function (error){
+                            toastr.warning(error.responseJSON.message);
+                        }
+                    })
+                }
+            })
+        })
+
+    </script>
+</th:block>
+</body>
+</html>

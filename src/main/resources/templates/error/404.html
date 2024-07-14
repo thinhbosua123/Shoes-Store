@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Không tìm thấy</title>
+    <th:block id="css-resources">
+        <style>
+            .error-div {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                margin-bottom: 50px;
+            }
+            .error-div img{
+                height: 350px;
+                width: 350px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<main id="main-content">
+    <div class="error-div">
+        <img th:src="@{/shop/images/404.png}" alt="404" >
+        <a href="/">
+            <button class="btn btn-secondary">Quay về trang chủ</button>
+        </a>
+    </div>
+
+</main>
+<th:block id="js-resources">
+
+</th:block>
+</body>
+</html>

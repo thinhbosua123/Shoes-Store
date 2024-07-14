@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout :: main-fragment(
+                                                                     ~{:: title},
+                                                                    'header',
+                                                                    'footer',
+                                                                     ~{:: #css-resources},
+                                                                     ~{:: #js-resources},
+                                                                     ~{:: #main-content}
+                                                                    )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Sản phẩm</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" th:href="@{/adminlte/pagination/simplePagination.css}">
+        <link rel="stylesheet" th:href="@{/shop/css/custom.css}">
+    </th:block>
+
+</head>
+<body>
+<main class="main" id="main-content">
+    <div class="category-banner-container bg-gray">
+        <div class="category-banner banner text-uppercase"
+             style="background: no-repeat 60%/cover url('shop/images/slider/1.jpg'); height: 450px">
+            <div class="container position-relative">
+                <div class="row">
+                    <div class="pl-lg-5 pb-5 pb-md-0 col-md-5 col-xl-4 col-lg-4 offset-1">
+<!--                        <h3 class="ml-lg-5 mb-2 ls-10">Electronic<br>Deals</h3>-->
+<!--                        <a href="#" class="ml-lg-5 btn btn-dark btn-black ls-10">Get Yours!</a>-->
+                    </div>
+<!--                    <div class="pl-lg-5 col-md-4 offset-md-0 offset-1 pt-4">-->
+<!--                        <div class="coupon-sale-content">-->
+<!--                            <h4 class="m-b-2 coupon-sale-text bg-white ls-10 text-transform-none">Exclusive COUPON</h4>-->
+<!--                            <h5 class="mb-2 coupon-sale-text d-block ls-10 p-0"><i class="ls-0">UP TO</i><b-->
+<!--                                    class="text-dark">$100</b> OFF</h5>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="icon-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sản phẩm</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-lg-9 main-content">
+                <div class="no-products">
+                    <img th:src="@{/shop/images/noresult.png}" alt="noresult.png">
+                    <h4>Không tìm thấy sản phẩm phù hợp</h4>
+                </div>
+                <div class="row product-row">
+                    <th:block th:each="product : ${listProduct}">
+                        <div class="col-6 col-sm-4">
+                            <div class="product-default inner-quickview inner-icon">
+                                <figure>
+                                    <a th:href="@{/{slug}/{id}(id=${product.id},slug=${product.slug})}">
+                                        <img th:src="@{${product.images}}" th:alt="${product.name}">
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2 class="product-title">
+                                        <a th:href="@{/{slug}/{id}(id=${product.id},slug=${product.slug})}"
+                                           th:text="${product.name}"></a>
+                                    </h2>
+                                    <div class="price-box">
+                                        <th:block th:if="${product.promotionPrice}">
+                                            <span class="product-price"
+                                                  th:text="${#numbers.formatDecimal(product.promotionPrice, 0, 'COMMA', 0, 'POINT') +' đ'}"></span>
+                                            <del class="old-price"
+                                                 th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') +' đ'}"></del>
+                                        </th:block>
+                                        <th:block th:unless="${product.promotionPrice}">
+                                            <span class="product-price"
+                                                  th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') +' đ'}"></span>
+                                        </th:block>
+                                    </div><!-- End .price-box -->
+                                </div><!-- End .product-details -->
+                            </div>
+                        </div><!-- End .col-sm-4 -->
+                    </th:block>
+                </div><!-- End .row -->
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination" id="pagination"></ul>
+                </nav>
+
+            </div><!-- End .col-lg-9 -->
+
+            <div class="sidebar-overlay"></div>
+            <div class="sidebar-toggle"><i class="fas fa-sliders-h"></i></div>
+            <aside class="sidebar-shop col-lg-3 order-lg-first mobile-sidebar">
+                <div class="sidebar-wrapper filter-bar small-size">
+                    <div class="filter-header content">
+                        <div class="left-side d-flex align-items-center"><i class="fas fa-sliders-h"></i>
+                            <div class="text">Lọc</div>
+                        </div>
+                        <button class="clear-filter btn btn-primary" disabled="disabled">Bỏ lọc</button>
+                    </div>
+                    <div class="widget">
+                        <h3 class="widget-title">
+                            <a data-toggle="collapse" href="#widget-body-2" role="button" aria-expanded="true"
+                               aria-controls="widget-body-2">Danh mục</a>
+                        </h3>
+
+                        <div class="collapse show" id="widget-body-2">
+                            <div class="widget-body">
+                                <ul class="cat-list">
+                                    <th:block th:each="category : ${categories}">
+                                        <li>
+                                            <input class="filter-checkbox check-category" type="checkbox"
+                                                   th:value="${category.id}"/>
+                                            <span th:text="${category.name}"></span>
+                                        </li>
+                                    </th:block>
+                                </ul>
+                            </div><!-- End .widget-body -->
+                        </div><!-- End .collapse -->
+                    </div><!-- End .widget -->
+
+                    <div class="widget">
+                        <h3 class="widget-title">
+                            <a data-toggle="collapse" href="#widget-body-5" role="button" aria-expanded="true"
+                               aria-controls="widget-body-5">Thương hiệu</a>
+                        </h3>
+
+                        <div class="collapse show" id="widget-body-5">
+                            <div class="widget-body">
+                                <ul class="cat-list">
+                                    <th:block th:each="brand : ${brands}">
+                                        <li>
+                                            <input class="filter-checkbox check-brand" type="checkbox"
+                                                   th:value="${brand.id}"/>
+                                            <span th:text="${brand.name}"></span>
+                                        </li>
+                                    </th:block>
+                                </ul>
+                            </div><!-- End .widget-body -->
+                        </div><!-- End .collapse -->
+                    </div><!-- End .widget -->
+
+                    <div class="widget">
+                        <h3 class="widget-title">
+                            <a data-toggle="collapse" href="#widget-body-3" role="button" aria-expanded="true"
+                               aria-controls="widget-body-3">Size</a>
+                        </h3>
+                        <!-- Size -->
+                        <div class="size content" id="widget-body-3">
+                            <div class="select-filter collapse show" id="size-collapse">
+                                <th:block th:each="size : ${sizeVn}">
+                                    <div class="item check-size" th:data-id="${size}" th:text="${size}"></div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div><!-- End .widget -->
+
+                    <div class="widget">
+                        <h3 class="widget-title">
+                            <a data-toggle="collapse" href="#widget-body-4" role="button" aria-expanded="true"
+                               aria-controls="widget-body-3">Price</a>
+                        </h3>
+
+                        <div class="collapse show" id="widget-body-4">
+                            <div class="widget-body">
+                                <!-- Price -->
+                                <div class="price-range content">
+                                    <input class="form-control price-input" id="from-price" type="text" placeholder="Từ">
+                                    <input class="form-control price-input" id="to-price" type="text" placeholder="Đến"pattern="[0-9]">
+                                    <button class="btn btn-primary apply-price red-btn" id="apply-price-web">Áp dụng
+                                    </button>
+                                </div>
+                            </div><!-- End .widget-body -->
+                        </div><!-- End .collapse -->
+                    </div><!-- End .widget -->
+                </div><!-- End .sidebar-wrapper -->
+            </aside><!-- End .col-lg-3 -->
+        </div><!-- End .row -->
+    </div><!-- End .container -->
+
+    <div class="mb-3"></div><!-- margin -->
+</main><!-- End .main -->
+
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/adminlte/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/js/table.js}"></script>
+    <script th:inline="javascript">
+        let brandIds = [[${brandIds}]];
+        let categoryIds = [[${categoryIds}]];
+        let currentPage = [[${currentPage}]];
+        let totalPages = [[${totalPages}]];
+        let checkedCategories = [];
+        let checkedBrands = [];
+        let checkedSizes = [];
+        let minPrice = 0;
+        let maxPrice = 0;
+
+        $(function () {
+            pagination();
+        });
+
+        function pagination() {
+            if (totalPages > 0) {
+                $('#pagination').show();
+                $('#pagination').pagination({
+                    pages: totalPages,
+                    currentPage: currentPage,
+                    cssStyle: '',
+                    prevText: '<span aria-hidden="true">&laquo;</span>',
+                    nextText: '<span aria-hidden="true">&raquo;</span>',
+                    onInit: function () {
+                        // fire first page loading
+                    },
+                    onPageClick: function (page, evt) {
+                        currentPage = page;
+                        searchProduct();
+                        $('body,html').animate({scrollTop: 0}, 800);
+                    }
+                });
+
+                $('#pagination .active .current').addClass('page-link');
+                $('#pagination .ellipse.clickable').addClass('page-link');
+                $('#pagination .disabled .current.prev').addClass('page-link');
+                $('#pagination .disabled .current.next').addClass('page-link');
+            } else {
+                $('#pagination').hide();
+            }
+        }
+
+        // Filter function
+        $(".check-brand").change(function () {
+            checkedBrands = $(".check-brand:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (!$(this).hasClass('checkbox-mobile')) {
+                currentPage = 1;
+                searchProduct();
+            }
+        });
+
+        $(".check-category").change(function () {
+            checkedCategories = $(".check-category:checked").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (!$(this).hasClass('checkbox-mobile')) {
+                currentPage = 1;
+                searchProduct();
+            }
+        });
+
+        $(".check-size").click(function () {
+            $(this).toggleClass('size-choose');
+
+            checkedSizes = $(".check-size.size-choose").map(function () {
+                return $(this).data("id");
+            }).get();
+
+            if (!$(this).hasClass('checkbox-mobile')) {
+                currentPage = 1;
+                searchProduct();
+            }
+        });
+
+        $('#apply-price-web').click(function () {
+            minPrice = parseInt($('.price-input#from-price').val());
+            maxPrice = parseInt($('.price-input#to-price').val());
+
+            if (isNaN(minPrice) && isNaN(maxPrice)) {
+                toastr.warning("Khoảng giá không hợp lệ");
+                return;
+            }
+            if (minPrice > 999999999999 || maxPrice > 999999999999) {
+                toastr.warning("Khoảng giá quá lớn");
+                return;
+            }
+
+            currentPage = 1;
+            searchProduct();
+        })
+
+        $('#apply-price-mobile').click(function () {
+            minPrice = parseInt($('.price-input#from-price-small').val());
+            maxPrice = parseInt($('.price-input#to-price-small').val());
+
+            if (isNaN(minPrice)) {
+                minPrice = 0;
+            }
+            if (isNaN(maxPrice)) {
+                maxPrice = 0;
+            }
+            if (minPrice > 999999999999 || maxPrice > 999999999999) {
+                toastr.warning("Khoảng giá quá lớn");
+                return;
+            }
+
+            currentPage = 1;
+            searchProduct();
+        })
+
+        function searchProduct() {
+            if (checkedSizes.length > 0 || checkedBrands.length > 0 || checkedCategories.length > 0 || minPrice > 0 || maxPrice > 0) {
+                $('.clear-filter')
+                    .removeAttr('disabled');
+            } else {
+                $('.clear-filter')
+                    .attr('disabled', 'disabled');
+            }
+
+            if (checkedBrands.length == 0) {
+                checkedBrands = brandIds;
+            }
+            if (checkedCategories.length == 0) {
+                checkedCategories = categoryIds;
+            }
+            if (maxPrice == 0) {
+                maxPrice = 999999999999;
+            }
+            req = {
+                brands: checkedBrands,
+                categories: checkedCategories,
+                sizes: checkedSizes,
+                min_price: minPrice,
+                max_price: maxPrice,
+                page: currentPage
+            }
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/api/san-pham/loc',
+                type: 'POST',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    genProductList(data.items);
+                    currentPage = data.currentPage;
+                    totalPages = data.totalPages;
+                    pagination();
+                    $('#filterModal').modal('hide');
+                },
+                error: function (data) {
+                    toastr.warning(data.responseJSON.message);
+                },
+            });
+        }
+
+        function genProductList(products) {
+            if (products.length > 0) {
+                let html = '';
+                for (product of products) {
+                    html += `
+                        <div class="col-6 col-sm-4">
+                            <div class="product-default inner-quickview inner-icon">
+                                <figure>
+                                    <a href="/${product.slug}/${product.id}">
+                                        <img src="${product.images}" th:alt="${product.name}">
+                                    </a>
+                                </figure>
+                                <div class="product-details">
+                                    <h2 class="product-title">
+                                        <a href="/${product.slug}/${product.id}">${product.name}</a>
+                                    </h2>
+                                    <div class="price-box">`
+                    if (product.promotionPrice > 0) {
+                        html += `
+                              <span class="product-price text-price" >${product.promotionPrice}</span> &#x20AB;
+                              <del class="old-price text-price" >${product.price}</del> &#x20AB;`
+                    } else {
+                        html += `<span class="product-price text-price">${product.price}</span> &#x20AB;`
+                    }
+                    html += `
+                                    </div>
+                               </div>
+                           </div>
+                        </div>`
+                }
+                $('.product-row').html(html);
+                $('.no-products').css('display', 'none');
+                formatMoney();
+            } else {
+                $('.product-row').html("");
+                $('.no-products').css('display', 'flex');
+            }
+        }
+
+            $("#from-price").keyup(function () {
+                if (
+                    $('.price-input#from-price').val() == '' &&
+                    $('.price-input#to-price').val() == ''
+                ) {
+                    $('.apply-price:not(.small)').attr('disabled', 'disabled');
+                } else {
+                    $('.apply-price:not(.small)').removeAttr('disabled');
+                }
+            });
+
+            $("#to-price").keyup(function () {
+                if (
+                    $('.price-input#from-price').val() == '' &&
+                    $('.price-input#to-price').val() == ''
+                ) {
+                    $('.apply-price:not(.small)').attr('disabled', 'disabled');
+                } else {
+                    $('.apply-price:not(.small)').removeAttr('disabled');
+                }
+            });
+
+            $(".clear-filter").click(function () {
+                checkedSizes = [];
+                checkedBrands = [];
+                checkedCategories = [];
+                minPrice = 0;
+                maxPrice = 0;
+                currentPage = 1;
+                searchProduct();
+
+                $('.filter-bar input').prop('checked', false);
+                $('.size .item').removeClass('size-choose');
+                $('.price-input').val('');
+                $('.price-input.small').val('');
+                $('.apply-price:not(.small)').attr('disabled', 'disabled');
+            })
+
+    </script>
+</th:block>
+</body>
+</html>
